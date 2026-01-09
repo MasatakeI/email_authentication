@@ -4,6 +4,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 
 import { signInUser, signOutUser, signUpUser } from "../../../models/AuthModel";
 
+import { normalizeAuthError } from "./normalizeAuthError";
+
 export const signUpUserAsync = createAsyncThunk(
   "auth/signUpUser",
   async ({ email, password }, { rejectWithValue }) => {
@@ -12,7 +14,7 @@ export const signUpUserAsync = createAsyncThunk(
 
       return user;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(normalizeAuthError(error));
     }
   }
 );
@@ -25,7 +27,7 @@ export const signInUserAsync = createAsyncThunk(
 
       return user;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(normalizeAuthError(error));
     }
   }
 );
@@ -33,11 +35,10 @@ export const signOutUserAsync = createAsyncThunk(
   "auth/signOutUser",
   async (_, { rejectWithValue }) => {
     try {
-      const user = await signOutUser();
-
-      return user;
+      await signOutUser();
+      return;
     } catch (error) {
-      return rejectWithValue(error.message);
+      return rejectWithValue(normalizeAuthError(error));
     }
   }
 );

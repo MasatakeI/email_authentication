@@ -21,13 +21,13 @@ const Footer = () => {
 
           {/* <Tooltip title="GitHubページ"> */}
           <a
-            href="https://github.com/MasatakeI/quiz_app.git"
+            href="https://github.com/MasatakeI/email_authentication.git"
             target="_blank"
             rel="noopener noreferrer"
             className="github-link"
           >
             {/* <GitHubIcon fontSize="small" /> */}
-            問い合わせ
+            GitHub
           </a>
           {/* </Tooltip> */}
         </div>

@@ -29,9 +29,9 @@
   transition: all ease 0.3s;
 }
 
-.logo:hover {
+/* .logo:hover {
   transform: translateY(-1px) scale(1.02);
-}
+} */
 
 @media (max-width: 768px) {
   .header {

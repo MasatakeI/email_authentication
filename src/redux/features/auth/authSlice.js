@@ -2,9 +2,9 @@
 
 import { createSlice } from "@reduxjs/toolkit";
 import {
+  signUpUserAsync,
   signInUserAsync,
   signOutUserAsync,
-  signUpUserAsync,
 } from "./authThunks";
 
 const initialState = {
@@ -40,9 +40,21 @@ const authSlice = createSlice({
       })
 
       //signIn
+      .addCase(signInUserAsync.pending, (state, action) => {
+        state.isLoading = true;
+        state.error = null;
+        state.user = null;
+      })
       .addCase(signInUserAsync.fulfilled, (state, action) => {
         state.user = action.payload;
         state.error = null;
+        state.isLoading = false;
+      })
+
+      .addCase(signInUserAsync.rejected, (state, action) => {
+        state.user = null;
+        state.isLoading = false;
+        state.error = action.payload;
       })
 
       //singOut

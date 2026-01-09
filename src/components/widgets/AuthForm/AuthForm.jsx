@@ -41,7 +41,7 @@ const AuthForm = () => {
         })
       );
     } catch (error) {
-      alert(error.message);
+      console.error(error.message);
     }
   };
 
@@ -58,7 +58,7 @@ const AuthForm = () => {
 
       alert("ログイン成功");
     } catch (error) {
-      alert(error.message);
+      console.error(error);
     }
   };
 
@@ -68,8 +68,6 @@ const AuthForm = () => {
 
   return (
     <div className="App">
-      {/* {user && <p className="message success">ログイン中：{user.email}</p>} */}
-
       <div className="form-container">
         {/* 登録 */}
         <div className="form sign-up">

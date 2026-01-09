@@ -20,7 +20,7 @@ const Header = () => {
     <div className={`header ${isScrolled ? "scrolled" : ""}`}>
       {/* <Tooltip title="ホームへ戻る"> */}
       <Link to="/" className="logo" aria-label="ホームへ戻る">
-        Email Auth
+        メール・パスワード認証
       </Link>
       {/* </Tooltip> */}
     </div>
