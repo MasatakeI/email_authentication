@@ -1,0 +1,13 @@
+.app-container {
+  padding-top: 70px;
+}
+.App {
+  min-height: 100vh;
+  background-color: var(--bg-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: "Inter", sans-serif;
+  padding: 20px;
+}
