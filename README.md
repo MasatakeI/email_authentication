@@ -1,25 +1,28 @@
-# Email Authentication App（React / Redux Toolkit / Firebase）
+<!-- README.me -->
+
+# Email Authentication App 　　　 React / Redux Toolkit / Firebase
 
 ## 概要
 
-Firebase Authentication（Email / Password）を利用した **認証機能付きシンプル SPA** です。
-ユーザー登録・ログイン・ログアウトを行い、ログイン状態に応じて画面遷移と UI 制御を行います。
+Firebase Authentication（Email / Password）を用いた
+認証機能付きシンプル SPA です。
 
-本プロジェクトでは、**Redux Toolkit を用いた状態管理** と **非同期処理（createAsyncThunk）**、
-および **責務分離を意識したディレクトリ設計** を重視しています。
+ユーザー登録・ログイン・ログアウトを通じて、
+認証状態を Redux で一元管理し、状態に応じた UI・画面遷移を行います。
+
+本プロジェクトでは特に以下を重視して設計・実装しています。
+
+・Redux Toolkit を用いた 実務的な状態管理
+・Model / Thunk / Slice / UI の 明確な責務分離
+・非同期処理とエラーハンドリングの整理
+・将来的な拡張・テストを見据えた構成
 
 ---
 
 ## 主な機能
 
-- ユーザー新規登録（Email / Password）
-- ログイン
-- ログアウト
-- Firebase Authentication 連携
-- 認証状態の Redux 管理
-- ログイン成功時のみ MainPage に遷移
-- ログアウト成功時のみ HomePage に遷移
-- エラーメッセージ表示
+-ユーザー新規登録（Email / Password） -ログイン -ログアウト
+-Firebase Authentication 連携 -認証状態の Redux 管理 -ログイン成功時のみ MainPage に遷移 -ログアウト成功時のみ HomePage に遷移 -エラーメッセージ表示（正規化済み）
 
 ---
 
@@ -54,67 +57,99 @@ src/
 │
 ├─ redux/
 │  ├─ store/
-      └─ rootReducer.js
+│  │  ├─ rootReducer.js
 │  │  └─ index.js
 │  └─ features/
 │     └─ auth/
 │        ├─ authSlice.js
 │        ├─ authThunks.js
-│        └─ authSelectors.js
+│        ├─ authSelectors.js
+│        ├─ authErrorCodes.js
+│        └─ normalizeAuthError.js
 │
 ├─ models/
-│  └─ AuthModel.js
+│  ├─ AuthModel.js
+│  └─ errors/
+│     └─ ModelError.js
 │
 ├─ auth/
 │  └─ auth.js
 │
 └─ App.jsx
+
 ```
 
 ---
 
 ## 設計方針
 
-外部サービス（Firebase）由来のエラーは Thunk で正規化し、
-Model ではアプリ固有の業務エラーのみを扱う設計としています
+本アプリケーションでは、実務での保守性・拡張性・テスト容易性を重視し、
+以下の設計方針に基づいて実装しています。
 
 ### 1. 責務分離
 
-| レイヤー       | 役割                           |
-| -------------- | ------------------------------ |
-| components     | UI とユーザー操作              |
-| redux/features | 状態管理・非同期処理           |
-| models         | Firebase など外部 API との通信 |
+| レイヤー       | 役割                          |
+| -------------- | ----------------------------- |
+| components     | UI・ユーザー操作              |
+| redux/features | 状態管理・非同期処理          |
+| models         | 業務ルール・外部 API 呼び出し |
+| Firebase SDK   | 認証インフラ                  |
+
+UI / Redux / Firebase が直接依存しない構成を意識しています。
+
+### 2. Model では業務ルールのみを扱う
+
+AuthModel では以下のみを責務としています。
+
+・入力値バリデーション
+・Firebase Authentication API 呼び出し
+・業務的に意味のあるエラーの送出（ModelError）
+
+if (!email || !password) {
+throw new ModelError(MODEL_ERROR_CODE.VALIDATION, "...");
+}
+Firebase 由来のエラー解釈は Model では行いません。
 
 ---
 
-### 2. Slice と Thunk の分離
+### 3. Thunk でのエラー正規化
 
-- `authSlice.js`：状態と reducer のみ
-- `authThunks.js`：非同期処理専用
+Firebase Authentication のエラーや ModelError は
+Thunk 層で 共通フォーマットに正規化しています。
+{
+code: string,
+message: string
+}
 
-👉 **可読性・テスト容易性・実務向け構成** を意識
+UI / Slice はエラーの種類を意識しない
+Firebase SDK への依存を Redux に持ち込まない
+
+return rejectWithValue(normalizeAuthError(error));
 
 ---
 
-### 3. 非同期成功を unwrap で制御
+### 4. Slice は状態管理に専念
 
-```js
+非同期処理の実装は行わない
+fulfilled / rejected の結果のみを反映
+error は常に { code, message } 形式
+
+## state.error = action.payload;
+
+### 5. 非同期成功を unwrap で制御
+
 await dispatch(signInUserAsync(payload)).unwrap();
-```
+成功時のみ画面遷移・UI 更新
+失敗時は catch で制御
+👉 実務を想定した 明示的な成功制御 を採用しています。
 
-- 成功時のみ画面遷移・メッセージ表示
-- 失敗時は catch でエラーハンドリング
+### 6. デバッグは Redux DevTools 前提
 
----
+console.log に依存しない
 
-### 4. 状態確認は Redux DevTools
+Action → payload → state を可視化
 
-- console.log に依存せず
-- Action → payload → state を可視化
-- 実務を想定したデバッグ手法
-
----
+実務でのデバッグフローを意識
 
 ## 今後の改善予定
 
@@ -127,11 +162,12 @@ await dispatch(signInUserAsync(payload)).unwrap();
 
 ## 学習・ポートフォリオ観点
 
-- Redux Toolkit の実務的な使い方
-- 非同期処理と UI 更新タイミングの理解
-- 状態駆動 UI 設計
+・本プロジェクトでは以下の理解・実践を目的としています。
+・Redux Toolkit を用いた実務的な状態管理
+・非同期処理と UI 更新の責務分離
+・エラーハンドリング設計
 
-を目的として作成しています。
+拡張・保守を意識したディレクトリ設計
 
 ---
 

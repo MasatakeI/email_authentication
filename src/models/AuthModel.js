@@ -1,4 +1,4 @@
-// models/AuthModel.js
+// src/models/AuthModel.js
 
 import {
   createUserWithEmailAndPassword,
@@ -7,7 +7,7 @@ import {
   signOut,
 } from "firebase/auth";
 
-import { auth } from "../auth/auth";
+import { auth } from "../firebase/auth";
 
 import { ModelError, MODEL_ERROR_CODE } from "./errors/ModelError";
 
