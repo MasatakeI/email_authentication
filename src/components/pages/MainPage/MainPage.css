@@ -1,0 +1,10 @@
+.main-page {
+  text-align: center;
+  margin: 0 auto;
+  margin-top: 100px;
+}
+
+.logout-button {
+  width: 50%;
+  margin: 0 auto;
+}

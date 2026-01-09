@@ -151,6 +151,65 @@ Action → payload → state を可視化
 
 実務でのデバッグフローを意識
 
+## テスト戦略
+
+本プロジェクトでは、すべてを網羅的にテストするのではなく、責務ごとにテスト対象を取捨選択する方針を採用しています。
+
+基本方針
+
+ロジックを持つ層を重点的にテスト
+
+外部ライブラリや薄いラッパーは過剰にテストしない
+
+テストの重複を避け、保守コストを抑える
+
+レイヤー別テスト方針
+レイヤー テスト方針
+models 重点的にテスト（単体テスト）
+redux/thunks 必要に応じてテスト（error 正規化・分岐）
+redux/slice reducer の振る舞いを必要最小限で確認
+components 本プロジェクトでは未実装（今後追加予定）
+Model 層のテスト（AuthModel）
+
+Model 層は以下の理由から 最も重要なテスト対象としています。
+
+Firebase など外部 API との境界
+
+業務バリデーション（入力チェック）
+
+例外（ModelError）の発生条件
+
+テスト内容
+
+正常系
+
+Firebase API が正しく呼ばれる
+
+戻り値（user）が期待通り返る
+
+異常系
+
+バリデーションエラー（ModelError）
+
+Firebase エラーがそのまま throw されること
+
+Firebase API は Vitest の mock を用いて完全にスタブ化しています。
+
+エラー処理のテスト戦略
+ModelError
+
+ModelError 自体はロジックを持たないため 単体テストは必須としていません
+
+利用側（Model / Thunk）のテストで 間接的に検証しています
+
+normalizeAuthError
+
+Thunk 層で Firebase エラーを正規化
+
+UI に依存しないエラー形式 { code, message } を保証
+
+👉 UI 層は error.code / error.message のみを見る設計
+
 ## 今後の改善予定
 
 - 認証状態の永続化（onAuthStateChanged）

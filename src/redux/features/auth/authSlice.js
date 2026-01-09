@@ -1,4 +1,4 @@
-// redux/features/auth/authSlice.js
+// src/redux/features/auth/authSlice.js
 
 import { createSlice } from "@reduxjs/toolkit";
 import {
@@ -7,7 +7,7 @@ import {
   signOutUserAsync,
 } from "./authThunks";
 
-const initialState = {
+export const authInitialState = {
   user: null,
   isLoading: false,
   error: null,
@@ -15,7 +15,7 @@ const initialState = {
 
 const authSlice = createSlice({
   name: "auth",
-  initialState,
+  initialState: authInitialState,
   reducers: {
     clearAuthError: (state, action) => {
       state.error = null;

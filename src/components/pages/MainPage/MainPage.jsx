@@ -1,6 +1,8 @@
 // components/page/MainPage/MainPage.jsx
 
 import React from "react";
+import "./MainPage.css";
+
 import { useNavigate } from "react-router";
 import { useDispatch } from "react-redux";
 
@@ -23,9 +25,11 @@ const MainPage = () => {
     }
   };
   return (
-    <div>
-      <p>MainPage</p>
-      <Button onClickHandler={handleSignOut}>ログアウト</Button>
+    <div className="main-page">
+      <p>ログイン成功</p>
+      <div className="logout-button">
+        <Button onClickHandler={handleSignOut}>ログアウト</Button>
+      </div>
     </div>
   );
 };

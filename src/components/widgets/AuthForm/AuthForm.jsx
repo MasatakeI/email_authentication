@@ -30,6 +30,8 @@ const AuthForm = () => {
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleSignUp = (e) => {
     e.preventDefault();
 
@@ -42,6 +44,7 @@ const AuthForm = () => {
       );
     } catch (error) {
       console.error(error.message);
+      setErrorMessage(error.message);
     }
   };
 
@@ -59,6 +62,7 @@ const AuthForm = () => {
       alert("ログイン成功");
     } catch (error) {
       console.error(error);
+      setErrorMessage(error.message);
     }
   };
 
@@ -119,7 +123,7 @@ const AuthForm = () => {
       </div>
 
       {/* エラー表示 */}
-      {error && <p className="message error">{error}</p>}
+      {error && <p className="message error">{errorMessage}</p>}
     </div>
   );
 };
