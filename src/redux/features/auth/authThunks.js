@@ -1,44 +1,69 @@
 // redux/features/auth/authThunks.js
 
-import { createAsyncThunk } from "@reduxjs/toolkit";
+import {
+  signInUser,
+  signOutUser,
+  signUpUser,
+  subscribeAuth,
+} from "../../../models/AuthModel";
 
-import { signInUser, signOutUser, signUpUser } from "../../../models/AuthModel";
+import { clearUser, setAuthChecked, setUser } from "./authSlice";
 
-import { normalizeAuthError } from "./normalizeAuthError";
+import { createThunk } from "../../utils/createThunk";
 
-export const signUpUserAsync = createAsyncThunk(
+import { showSnackbar } from "../snackbar/snackbarSlice";
+
+import { mapAuthErrorToModelError } from "./mapAuthErrorToModelError";
+
+export const initAuthAsync = () => (dispatch) => {
+  const unsubscribe = subscribeAuth((user) => {
+    if (user) {
+      dispatch(setUser(user));
+    } else {
+      dispatch(clearUser());
+    }
+
+    dispatch(setAuthChecked());
+  });
+
+  return unsubscribe;
+};
+
+export const signUpUserAsync = createThunk(
   "auth/signUpUser",
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password }, thunkApi) => {
     try {
       const user = await signUpUser(email, password);
 
+      thunkApi.dispatch(showSnackbar(`サインアップ成功`));
       return user;
     } catch (error) {
-      return rejectWithValue(normalizeAuthError(error));
+      throw mapAuthErrorToModelError(error);
     }
   }
 );
 
-export const signInUserAsync = createAsyncThunk(
+export const signInUserAsync = createThunk(
   "auth/signInUser",
-  async ({ email, password }, { rejectWithValue }) => {
+  async ({ email, password }, thunkApi) => {
     try {
       const user = await signInUser(email, password);
-
+      thunkApi.dispatch(showSnackbar(`サインイン成功`));
       return user;
     } catch (error) {
-      return rejectWithValue(normalizeAuthError(error));
+      throw mapAuthErrorToModelError(error);
     }
   }
 );
-export const signOutUserAsync = createAsyncThunk(
+export const signOutUserAsync = createThunk(
   "auth/signOutUser",
-  async (_, { rejectWithValue }) => {
+  async (_, thunkApi) => {
     try {
       await signOutUser();
+      thunkApi.dispatch(showSnackbar(`サインアウト成功`));
       return;
     } catch (error) {
-      return rejectWithValue(normalizeAuthError(error));
+      throw mapAuthErrorToModelError(error);
     }
   }
 );

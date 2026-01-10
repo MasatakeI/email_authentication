@@ -1,6 +1,6 @@
 // src/redux/features/auth/authSlice.js
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, isRejectedWithValue } from "@reduxjs/toolkit";
 import {
   signUpUserAsync,
   signInUserAsync,
@@ -11,14 +11,25 @@ export const authInitialState = {
   user: null,
   isLoading: false,
   error: null,
+  authChecked: false,
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState: authInitialState,
   reducers: {
-    clearAuthError: (state, action) => {
+    clearAuthError: (state) => {
       state.error = null;
+    },
+    setUser: (state, action) => {
+      state.user = action.payload;
+    },
+
+    setAuthChecked: (state) => {
+      state.authChecked = true;
+    },
+    clearUser: (state) => {
+      state.user = null;
     },
   },
 
@@ -33,11 +44,6 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.error = null;
       })
-      .addCase(signUpUserAsync.rejected, (state, action) => {
-        state.isLoading = false;
-        state.user = null;
-        state.error = action.payload;
-      })
 
       //signIn
       .addCase(signInUserAsync.pending, (state, action) => {
@@ -51,19 +57,22 @@ const authSlice = createSlice({
         state.isLoading = false;
       })
 
-      .addCase(signInUserAsync.rejected, (state, action) => {
-        state.user = null;
-        state.isLoading = false;
-        state.error = action.payload;
-      })
-
       //singOut
       .addCase(signOutUserAsync.fulfilled, (state, action) => {
         state.user = null;
-      });
+      })
+      // rejected共通処理
+      .addMatcher(
+        isRejectedWithValue(signUpUserAsync, signInUserAsync),
+        (state, action) => {
+          state.isLoading = false;
+          state.error = action.payload;
+        }
+      );
   },
 });
 
-export const { clearAuthError } = authSlice.actions;
+export const { clearAuthError, setAuthChecked, setUser, clearUser } =
+  authSlice.actions;
 
 export default authSlice.reducer;

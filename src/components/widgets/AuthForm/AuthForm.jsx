@@ -1,6 +1,6 @@
-//widgets/AuthForm/AuthForm.jsx
+// src/components/widgets/AuthForm/AuthForm.jsx
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./AuthForm.css";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -30,21 +30,22 @@ const AuthForm = () => {
   const [signInEmail, setSignInEmail] = useState("");
   const [signInPassword, setSignInPassword] = useState("");
 
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
 
     try {
-      dispatch(
+      await dispatch(
         signUpUserAsync({
           email: signUpEmail,
           password: signUpPassword,
         })
-      );
-    } catch (error) {
-      console.error(error.message);
-      setErrorMessage(error.message);
+      ).unwrap();
+
+      // alert("メールを確認してください");
+    } catch {
+    } finally {
+      setSignUpEmail("");
+      setSignUpPassword("");
     }
   };
 
@@ -59,16 +60,13 @@ const AuthForm = () => {
         })
       ).unwrap();
 
-      alert("ログイン成功");
-    } catch (error) {
-      console.error(error);
-      setErrorMessage(error.message);
+      navigate("/main");
+    } catch {
+    } finally {
+      setSignInEmail("");
+      setSignInPassword("");
     }
   };
-
-  useEffect(() => {
-    if (user) navigate("/main");
-  }, [user]);
 
   return (
     <div className="App">
@@ -121,9 +119,6 @@ const AuthForm = () => {
           </form>
         </div>
       </div>
-
-      {/* エラー表示 */}
-      {error && <p className="message error">{errorMessage}</p>}
     </div>
   );
 };

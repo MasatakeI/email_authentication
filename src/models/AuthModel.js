@@ -5,6 +5,7 @@ import {
   sendEmailVerification,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from "firebase/auth";
 
 import { auth } from "../firebase/auth";
@@ -29,6 +30,22 @@ const validateEmailAndPassword = (email, password) => {
   }
 };
 
+const toAuthUser = (user) => ({
+  uid: user.uid,
+  email: user.email,
+  emailVerified: user.emailVerified,
+});
+
+export const subscribeAuth = (onChange) => {
+  return onAuthStateChanged(auth, (user) => {
+    if (user) {
+      onChange(toAuthUser(user));
+    } else {
+      onChange(null);
+    }
+  });
+};
+
 export const signUpUser = async (email, password) => {
   validateEmailAndPassword(email, password);
   const userCredential = await createUserWithEmailAndPassword(
@@ -41,7 +58,7 @@ export const signUpUser = async (email, password) => {
 
   await sendEmailVerification(user);
 
-  return user;
+  return toAuthUser(user);
 };
 
 export const signInUser = async (email, password) => {
@@ -52,9 +69,7 @@ export const signInUser = async (email, password) => {
     password
   );
 
-  const user = userCredential.user;
-
-  return user;
+  return toAuthUser(userCredential.user);
 };
 
 export const signOutUser = async () => {

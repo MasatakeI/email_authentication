@@ -5,6 +5,8 @@ export const MODEL_ERROR_CODE = {
   VALIDATION: "VALIDATION",
   INVALID_DATA: "INVALID_DATA",
   FORBIDDEN: "FORBIDDEN",
+  FIRESTORE: "FIRESTORE",
+  UNKNOWN: "UNKNOWN",
 };
 
 export class ModelError extends Error {

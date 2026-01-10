@@ -18,11 +18,8 @@ const MainPage = () => {
     try {
       dispatch(signOutUserAsync()).unwrap();
 
-      alert("ログアウト成功");
       navigate("/");
-    } catch (error) {
-      alert(error, "ログアウト失敗");
-    }
+    } catch (error) {}
   };
   return (
     <div className="main-page">
