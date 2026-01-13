@@ -10,6 +10,9 @@ import {
 import authSlice, {
   clearAuthError,
   authInitialState,
+  setUser,
+  setAuthChecked,
+  clearUser,
 } from "../../../../redux/features/auth/authSlice";
 
 import { mockUser } from "../../fixtures/authFixture";
@@ -30,23 +33,54 @@ describe("authSlice", () => {
       user: null,
       isLoading: false,
       error: null,
+      authChecked: false,
     });
   });
 
   describe("reducer", () => {
     test("clearAuthError:エラーをクリアする", () => {
       const prev = {
-        user: null,
-        isLoading: false,
+        ...authInitialState,
         error: "エラー",
       };
 
       const action = clearAuthError();
       const state = authSlice(prev, action);
       expect(state).toEqual({
-        user: null,
-        isLoading: false,
+        ...prev,
         error: null,
+      });
+    });
+
+    test("setUser:user情報を設定する", () => {
+      const action = setUser({ uid: 1 });
+      const state = authSlice(authInitialState, action);
+      expect(state).toEqual({
+        ...authInitialState,
+        user: { uid: 1 },
+      });
+    });
+
+    test("setAuthChecked:authChecked=trueにする", () => {
+      const action = setAuthChecked();
+      const state = authSlice(authInitialState, action);
+      expect(state).toEqual({
+        ...authInitialState,
+        authChecked: true,
+      });
+    });
+    test("clearUser:user情報をクリアする", () => {
+      const prev = {
+        ...authInitialState,
+        user: { uid: 1 },
+        authChecked: true,
+      };
+
+      const action = clearUser();
+      const state = authSlice(prev, action);
+      expect(state).toEqual({
+        ...prev,
+        user: null,
       });
     });
   });
@@ -67,6 +101,7 @@ describe("authSlice", () => {
           isLoading: false,
           user: mockUser,
           error: null,
+          authChecked: false,
         });
       });
 
@@ -83,6 +118,7 @@ describe("authSlice", () => {
           user: null,
           isLoading: false,
           error: error,
+          authChecked: false,
         });
       });
     });
@@ -102,6 +138,7 @@ describe("authSlice", () => {
           isLoading: false,
           user: mockUser,
           error: null,
+          authChecked: false,
         });
       });
 
@@ -118,6 +155,7 @@ describe("authSlice", () => {
           user: null,
           isLoading: false,
           error: error,
+          authChecked: false,
         });
       });
     });
@@ -125,9 +163,10 @@ describe("authSlice", () => {
     describe("signOutUserAsync", () => {
       test("成功:user情報をnullに設定する", () => {
         const prev = {
-          isLoading: false,
+          ...authInitialState,
+
           user: mockUser,
-          error: null,
+          authChecked: true,
         };
 
         const fulfilled = applyFulfilled(authSlice, signOutUserAsync, {}, prev);

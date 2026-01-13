@@ -35,10 +35,11 @@ export const signUpUserAsync = createThunk(
     try {
       const user = await signUpUser(email, password);
 
-      thunkApi.dispatch(showSnackbar(`サインアップ成功`));
+      thunkApi.dispatch(showSnackbar(`登録成功! 送信メールを確認してください`));
       return user;
     } catch (error) {
       throw mapAuthErrorToModelError(error);
+      // return thunkApi.rejectWithValue(mapAuthErrorToModelError(error));
     }
   }
 );
@@ -48,10 +49,11 @@ export const signInUserAsync = createThunk(
   async ({ email, password }, thunkApi) => {
     try {
       const user = await signInUser(email, password);
-      thunkApi.dispatch(showSnackbar(`サインイン成功`));
+      thunkApi.dispatch(showSnackbar(`ログイン成功`));
       return user;
     } catch (error) {
       throw mapAuthErrorToModelError(error);
+      // return thunkApi.rejectWithValue(mapAuthErrorToModelError(error));
     }
   }
 );
@@ -60,10 +62,11 @@ export const signOutUserAsync = createThunk(
   async (_, thunkApi) => {
     try {
       await signOutUser();
-      thunkApi.dispatch(showSnackbar(`サインアウト成功`));
+      thunkApi.dispatch(showSnackbar(`ログアウト成功`));
       return;
     } catch (error) {
       throw mapAuthErrorToModelError(error);
+      // return thunkApi.rejectWithValue(mapAuthErrorToModelError(error));
     }
   }
 );

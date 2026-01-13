@@ -7,6 +7,7 @@ export const MODEL_ERROR_CODE = {
   FORBIDDEN: "FORBIDDEN",
   FIRESTORE: "FIRESTORE",
   UNKNOWN: "UNKNOWN",
+  AUTH: "AUTH",
 };
 
 export class ModelError extends Error {

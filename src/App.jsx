@@ -40,7 +40,7 @@ const App = () => {
 
   return (
     <Router>
-      <div>
+      <div className="App">
         <Header />
 
         <div className="app-container">

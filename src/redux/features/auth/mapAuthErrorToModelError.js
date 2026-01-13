@@ -39,7 +39,7 @@ export const mapAuthErrorToModelError = (error) => {
 
       default:
         return new ModelError(
-          MODEL_ERROR_CODE.FIRESTORE,
+          MODEL_ERROR_CODE.AUTH,
           "認証エラーが発生しました"
         );
     }

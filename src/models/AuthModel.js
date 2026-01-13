@@ -30,6 +30,12 @@ const validateEmailAndPassword = (email, password) => {
   }
 };
 
+const validateRequired = (email, password) => {
+  if (!email || !password) {
+    throw new ModelError(MODEL_ERROR_CODE.VALIDATION, AUTH_MESSAGES.REQUIRED);
+  }
+};
+
 const toAuthUser = (user) => ({
   uid: user.uid,
   email: user.email,
@@ -62,7 +68,7 @@ export const signUpUser = async (email, password) => {
 };
 
 export const signInUser = async (email, password) => {
-  validateEmailAndPassword(email, password);
+  validateRequired(email, password);
   const userCredential = await signInWithEmailAndPassword(
     auth,
     email,

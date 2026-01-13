@@ -20,12 +20,16 @@ vi.mock("../../../../models/AuthModel", () => ({
   signUpUser: vi.fn(),
 }));
 
-import { normalizeAuthError } from "../../../../redux/features/auth/normalizeAuthError";
-vi.mock("../../../../redux/features/auth/normalizeAuthError", () => ({
-  normalizeAuthError: vi.fn(),
+import { mapAuthErrorToModelError } from "../../../../redux/features/auth/mapAuthErrorToModelError";
+vi.mock("../../../../redux/features/auth/mapAuthErrorToModelError", () => ({
+  mapAuthErrorToModelError: vi.fn(),
 }));
 
-import { ModelError } from "../../../../models/errors/ModelError";
+import {
+  MODEL_ERROR_CODE,
+  ModelError,
+} from "../../../../models/errors/ModelError";
+
 import { mockUser } from "../../fixtures/authFixture";
 
 // ヘルパー関数
@@ -60,22 +64,25 @@ describe("authThunks", () => {
       );
     });
     test("失敗:ModelErrorの場合,rejectWithValueのpayloadを返す", async () => {
-      const normalizedError = {
-        code: "VALIDATION",
-        message: "エラー",
-      };
+      const normalizedError = new ModelError(
+        MODEL_ERROR_CODE.VALIDATION,
+        "エラー"
+      );
 
       mockError(signUpUser, normalizedError.code, normalizedError.message);
 
-      normalizeAuthError.mockReturnValue(normalizedError);
+      mapAuthErrorToModelError.mockReturnValue(normalizedError);
 
       const result = await callThunk(signUpUserAsync, {
         email: "",
         password: "",
       });
 
-      expect(result.payload).toEqual(normalizedError);
-      expect(normalizeAuthError).toHaveBeenCalled();
+      expect(result.payload).toEqual({
+        code: MODEL_ERROR_CODE.VALIDATION,
+        message: "エラー",
+      });
+      expect(mapAuthErrorToModelError).toHaveBeenCalled();
     });
   });
 
@@ -95,22 +102,25 @@ describe("authThunks", () => {
       );
     });
     test("失敗:ModelErrorの場合,rejectWithValueのpayloadを返す", async () => {
-      const normalizedError = {
-        code: "VALIDATION",
-        message: "エラー",
-      };
+      const normalizedError = new ModelError(
+        MODEL_ERROR_CODE.VALIDATION,
+        "エラー"
+      );
 
       mockError(signInUser, normalizedError.code, normalizedError.message);
 
-      normalizeAuthError.mockReturnValue(normalizedError);
+      mapAuthErrorToModelError.mockReturnValue(normalizedError);
 
       const result = await callThunk(signInUserAsync, {
         email: "",
         password: "",
       });
 
-      expect(result.payload).toEqual(normalizedError);
-      expect(normalizeAuthError).toHaveBeenCalled();
+      expect(result.payload).toEqual({
+        code: MODEL_ERROR_CODE.VALIDATION,
+        message: "エラー",
+      });
+      expect(mapAuthErrorToModelError).toHaveBeenCalled();
     });
   });
 
@@ -122,22 +132,25 @@ describe("authThunks", () => {
       expect(signOutUser).toHaveBeenCalledTimes(1);
     });
     test("失敗:ModelErrorの場合,rejectWithValueのpayloadを返す", async () => {
-      const normalizedError = {
-        code: "VALIDATION",
-        message: "エラー",
-      };
+      const normalizedError = new ModelError(
+        MODEL_ERROR_CODE.VALIDATION,
+        "エラー"
+      );
 
       mockError(signOutUser, normalizedError.code, normalizedError.message);
 
-      normalizeAuthError.mockReturnValue(normalizedError);
+      mapAuthErrorToModelError.mockReturnValue(normalizedError);
 
       const result = await callThunk(signOutUserAsync, {
         email: "",
         password: "",
       });
 
-      expect(result.payload).toEqual(normalizedError);
-      expect(normalizeAuthError).toHaveBeenCalled();
+      expect(result.payload).toEqual({
+        code: MODEL_ERROR_CODE.VALIDATION,
+        message: "エラー",
+      });
+      expect(mapAuthErrorToModelError).toHaveBeenCalled();
     });
   });
 });

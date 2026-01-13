@@ -4,11 +4,7 @@ import React, { useState } from "react";
 import "./AuthForm.css";
 
 import { useDispatch, useSelector } from "react-redux";
-import {
-  selectUser,
-  selectIsLoading,
-  selectError,
-} from "../../../redux/features/auth/authSelectors";
+import { selectIsLoading } from "../../../redux/features/auth/authSelectors";
 
 import {
   signUpUserAsync,
@@ -17,13 +13,14 @@ import {
 
 import { useNavigate } from "react-router";
 
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+
 const AuthForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const user = useSelector(selectUser);
   const isLoading = useSelector(selectIsLoading);
-  const error = useSelector(selectError);
 
   const [signUpEmail, setSignUpEmail] = useState("");
   const [signUpPassword, setSignUpPassword] = useState("");
@@ -40,8 +37,6 @@ const AuthForm = () => {
           password: signUpPassword,
         })
       ).unwrap();
-
-      // alert("メールを確認してください");
     } catch {
     } finally {
       setSignUpEmail("");
@@ -69,56 +64,58 @@ const AuthForm = () => {
   };
 
   return (
-    <div className="App">
-      <div className="form-container">
-        {/* 登録 */}
-        <div className="form sign-up">
-          <h2>登録フォーム</h2>
-          <form onSubmit={handleSignUp} className="auth-form">
-            <label>メールアドレス</label>
-            <input
-              type="email"
-              value={signUpEmail}
-              onChange={(e) => setSignUpEmail(e.target.value)}
-            />
+    <div>
+      <Box sx={{ flexGrow: 1 }} className="auth-box">
+        <Grid className="form-container" container spacing={3}>
+          {/* 登録 */}
+          <Grid size={{ xs: 12, sm: 6 }} className="form sign-up">
+            <h2>登録</h2>
+            <form onSubmit={handleSignUp} className="auth-form">
+              <label>メールアドレス</label>
+              <input
+                type="email"
+                value={signUpEmail}
+                onChange={(e) => setSignUpEmail(e.target.value)}
+              />
 
-            <label>パスワード</label>
-            <input
-              type="password"
-              value={signUpPassword}
-              onChange={(e) => setSignUpPassword(e.target.value)}
-            />
+              <label>パスワード</label>
+              <input
+                type="password"
+                value={signUpPassword}
+                onChange={(e) => setSignUpPassword(e.target.value)}
+              />
 
-            <button type="submit" disabled={isLoading} className="btn">
-              登録
-            </button>
-          </form>
-        </div>
+              <button type="submit" disabled={isLoading} className="btn">
+                登録
+              </button>
+            </form>
+          </Grid>
 
-        {/* ログイン */}
-        <div className="form sign-in">
-          <h2>ログインフォーム</h2>
-          <form onSubmit={handleSignIn} className="auth-form">
-            <label>メールアドレス</label>
-            <input
-              type="email"
-              value={signInEmail}
-              onChange={(e) => setSignInEmail(e.target.value)}
-            />
+          {/* ログイン */}
+          <Grid size={{ xs: 12, sm: 6 }} className="form sign-in">
+            <h2>ログイン</h2>
+            <form onSubmit={handleSignIn} className="auth-form">
+              <label>メールアドレス</label>
+              <input
+                type="email"
+                value={signInEmail}
+                onChange={(e) => setSignInEmail(e.target.value)}
+              />
 
-            <label>パスワード</label>
-            <input
-              type="password"
-              value={signInPassword}
-              onChange={(e) => setSignInPassword(e.target.value)}
-            />
+              <label>パスワード</label>
+              <input
+                type="password"
+                value={signInPassword}
+                onChange={(e) => setSignInPassword(e.target.value)}
+              />
 
-            <button type="submit" disabled={isLoading} className="btn">
-              ログイン
-            </button>
-          </form>
-        </div>
-      </div>
+              <button type="submit" disabled={isLoading} className="btn">
+                ログイン
+              </button>
+            </form>
+          </Grid>
+        </Grid>
+      </Box>
     </div>
   );
 };
