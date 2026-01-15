@@ -1,3 +1,5 @@
+// components/routing/PrivateRoute/PrivateRoute.jsx
+
 import { Navigate } from "react-router";
 import { useSelector } from "react-redux";
 import {

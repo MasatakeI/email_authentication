@@ -8,18 +8,20 @@ import { useDispatch } from "react-redux";
 
 import Button from "../../common/Button/Button";
 
-import { signOutUserAsync } from "../../../redux/features/auth/authThunks";
+import { signOutUserAsync } from "@/redux/features/auth/authThunks";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     try {
-      dispatch(signOutUserAsync()).unwrap();
+      await dispatch(signOutUserAsync()).unwrap();
 
       navigate("/");
-    } catch (error) {}
+    } catch (error) {
+      console.error(error);
+    }
   };
   return (
     <div className="main-page">

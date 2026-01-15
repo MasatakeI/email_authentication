@@ -2,6 +2,7 @@
 
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
+import path from "path";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -19,5 +20,11 @@ export default defineConfig({
     environment: "jsdom",
     // 3. テスト前に実行するセットアップファイル
     setupFiles: "./src/test/setup.js",
+  },
+
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
   },
 });
