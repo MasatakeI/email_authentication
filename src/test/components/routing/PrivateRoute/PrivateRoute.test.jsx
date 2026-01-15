@@ -1,4 +1,4 @@
-// test/src/components/routing/PrivateRoute/PrivateRoute.jsx
+// src/test/components/routing/PrivateRoute/PrivateRoute.jsx
 
 import { render, screen } from "@testing-library/react";
 import { vi, beforeEach, expect } from "vitest";

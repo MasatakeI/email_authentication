@@ -1,4 +1,4 @@
-// models/errors/ModelError.js
+// src/models/errors/ModelError.js
 
 export const MODEL_ERROR_CODE = {
   NOT_FOUND: "NOT_FOUND",

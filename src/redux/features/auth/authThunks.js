@@ -1,4 +1,4 @@
-// redux/features/auth/authThunks.js
+// src/redux/features/auth/authThunks.js
 
 import {
   signInUser,

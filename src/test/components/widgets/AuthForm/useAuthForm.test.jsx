@@ -1,3 +1,5 @@
+// src/test/components/widgets/AuthForm/useAuthForm.test.jsx
+
 import { describe, test, expect, vi, beforeEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
 

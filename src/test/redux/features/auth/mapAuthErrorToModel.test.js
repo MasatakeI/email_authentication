@@ -1,4 +1,4 @@
-// test/redux/features/auth/mapAuthErrorToModel.test.js
+// src/test/redux/features/auth/mapAuthErrorToModel.test.js
 
 import { describe, test, expect } from "vitest";
 

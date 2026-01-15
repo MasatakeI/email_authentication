@@ -1,4 +1,4 @@
-// test/models/AuthModel.js
+// src/test/models/AuthModel.js
 
 import { describe, test, expect, vi, beforeEach } from "vitest";
 

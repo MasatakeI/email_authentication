@@ -1,4 +1,4 @@
-// src/auth/auth.js
+// src/firebase/auth.js
 
 import { initializeApp } from "firebase/app";
 

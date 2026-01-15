@@ -1,3 +1,5 @@
+// src/test/components/widgets/AuthForm/AuthFormSection.test.jsx
+
 import { describe, test, expect, vi } from "vitest";
 
 import { screen, render, fireEvent } from "@testing-library/react";

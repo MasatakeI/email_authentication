@@ -1,229 +1,118 @@
-<!-- README -->
+<!-- README.md -->
 
-# Email Authentication App
+# メール・パスワード認証アプリ (React / Redux Toolkit / Firebase)
 
-**React / Redux Toolkit / Firebase**
-
----
-
-## 概要
-
-Firebase Authentication（Email / Password）を利用した  
-**認証機能付きシンプル SPA** です。
-
-ユーザー登録・ログイン・ログアウトを通じて  
-**認証状態を Redux で一元管理** し、  
-状態に応じた UI 表示・画面遷移を行います。
-
-本プロジェクトでは、実務を意識し、特に以下を重視して設計・実装しています。
-
-- Redux Toolkit を用いた実務的な状態管理
-- Model / Thunk / Slice / UI の明確な責務分離
-- 非同期処理とエラーハンドリングの一元化
-- 将来的な拡張・テストを見据えた構成
+Firebase Authentication を利用した、メール・パスワード認証（登録 / ログイン / ログアウト）を行うシンプルな Web アプリです。
+実務レベルの「**責務分離**」「**エラーハンドリング**」「**テスト容易性**」を重視した設計を行っています。
 
 ---
 
-## 主な機能
+## 🚀 主な機能
 
-- ユーザー新規登録（Email / Password）
-- ログイン / ログアウト
-- Firebase Authentication 連携
-- 認証状態の Redux 管理
-- ログイン成功時のみ MainPage に遷移
-- ログアウト時に認証状態をクリア
-- 成功通知（Snackbar）
-- エラー情報の正規化管理（code / message）
+- **ユーザー登録・ログイン・ログアウト**
+- **メール認証**: 登録時の認証メール送信機能
+- **ルーティング保護**: `PrivateRoute` による、未認証ユーザーのアクセス制限
+- **通知システム**: Snackbar を利用した、成功・失敗時の即時フィードバック
+- **エラー正規化**: Firebase 固有のエラーをアプリケーション共通形式に変換して表示
+
+## 🛠 技術スタック
+
+### フロントエンド
+
+- **Framework**: React
+- **State Management**: Redux Toolkit (Thunk)
+- **Routing**: React Router
+- **UI Components**: Material UI (MUI)
+
+### バックエンド / インフラ
+
+- **Authentication**: Firebase Authentication
+
+### テスト
+
+- **Runner**: Vitest
+- **Library**: React Testing Library
 
 ---
 
-## 技術スタック
+## 🏗 アーキテクチャ概要
 
-- **React**
-- **Redux Toolkit**
-  - createSlice
-  - createAsyncThunk
-  - createSelector
-- **React Redux**
-- **React Router**
-- **Firebase Authentication**
-- **CSS（コンポーネント単位）**
+UI 層からデータ層まで、依存関係を一方通行に整理し、Firebase への直接的な依存を最小限に抑えています。
 
----
+### 階層別の役割
 
-## ディレクトリ構成（抜粋）
+1. **UI (components)**: 表示に専念。状態管理や Firebase の仕様を意識しない。
+2. **Hooks (useAuthForm)**: View とロジックの橋渡しを担当。
+3. **Redux (authThunks)**: アプリケーションロジックおよび非同期処理の制御。
+4. **Model (AuthModel)**: Firebase SDK のラッパー。エラーの正規化とデータ抽出を担当。
 
-```txt
+### ディレクトリ構成（抜粋）
+
+```text
 src/
 ├─ components/
-│  ├─ pages/
-│  │  ├─ HomePage/
-│  │  └─ MainPage/
-│  ├─ widgets/
-│  │  └─ AuthForm/
-│  └─ common/
-│     └─ SimpleSnackbar/
-│
-├─ redux/
-│  ├─ store/
-│  │  ├─ rootReducer.js
-│  │  └─ index.js
-│  └─ features/
-│     ├─ auth/
-│     │  ├─ authSlice.js
-│     │  ├─ authThunks.js
-│     │  ├─ authSelectors.js
-│     │  ├─ authErrorCodes.js
-│     │  └─ mapAuthErrorToModelError.js
-│     └─ snackbar/
-│        ├─ snackbarSlice.js
-│        └─ snackbarSelector.js
-│
-├─ redux/utils/
-│  └─ createThunk.js
-│
-├─ models/
-│  ├─ AuthModel.js
-│  └─ errors/
-│     └─ ModelError.js
-│
-├─ auth/
-│  └─ auth.js
-│
-└─ App.jsx
-設計方針
-1. 責務分離
-レイヤー	役割
-components	UI・ユーザー操作
-redux/features	状態管理・非同期制御
-models	業務ルール・外部 API 呼び出し
-Firebase SDK	認証インフラ
+│  ├─ routing/       # PrivateRoute (認証ガード)
+│  └─ widgets/       # AuthForm (View/Hook 分離)
+├─ models/           # Firebase 依存をここに集約
+│  └─ errors/        # ModelError.js (エラー正規化定義)
+├─ redux/            # Slices, Thunks, Middlewares
+├─ firebase/         # Firebase Config
+└─ test/             # 各レイヤーのユニットテスト
 
-UI / Redux / Firebase が直接依存しない構成を意識しています。
 
-2. Model 層は業務ルールのみを扱う
-AuthModel の責務は以下に限定しています。
 
-入力値バリデーション
+## 🔒 認証フロー & セキュリティ
 
-Firebase Authentication API 呼び出し
+堅牢なユーザー体験を提供するため、初期化プロセスとルーティング制御を厳密に分離しています。
 
-業務的に意味のある例外（ModelError）の送出
+### 1. 初期化プロセス
+アプリ起動時に `initAuthAsync` を dispatch し、Firebase の `onAuthStateChanged` を購読します。
+- **認証確認中**: ローディング画面を表示し、未確定状態での不正なリダイレクトを防止。
+- **確認完了後**: `authChecked = true` となり、適切な画面へのルーティングを許可します。
 
-js
-コードをコピーする
-if (!email || !password) {
-  throw new ModelError(
-    MODEL_ERROR_CODE.VALIDATION,
-    "メールアドレスとパスワードは必須です"
-  );
-}
-Firebase 由来のエラー解釈は Model 層では行いません。
+### 2. PrivateRoute の制御
+以下の条件をすべて満たさない限り、プライベートなリソースへのアクセスを拒否し、ルートパス（`/`）へリダイレクトします。
+* **認証確認完了** (`authChecked`)
+* **ログイン済み** (`user` が存在)
+* **メールアドレス検証済み** (`emailVerified`)
 
-3. Firebase エラーは Thunk で ModelError に変換
-Firebase Authentication のエラーは
-Thunk 層で ModelError にマッピング しています。
+---
 
-js
-コードをコピーする
-throw mapAuthErrorToModelError(error);
-これにより、
+## ⚠️ エラーハンドリング設計
 
-Firebase SDK への依存を Redux に持ち込まない
+エラーの発生からユーザーへの通知までを自動化し、各レイヤーでの重複コードを排除しています。
 
-Model / Redux / UI 間でエラー形式を統一
 
-を実現しています。
 
-4. createThunk によるエラー一元化
-すべての Thunk は共通の createThunk を使用しています。
+| レイヤ | 役割 |
+| :--- | :--- |
+| **Model** | Firebase SDK のエラーを捕捉し、独自クラス `ModelError` へ正規化。 |
+| **Thunk** | ビジネスロジックを実行。エラー時は `rejectWithValue` で状態を更新。 |
+| **Middleware** | `snackbarMiddleware` が非同期処理の失敗を検知し、自動で Snackbar を表示。 |
+| **UI** | 成功・失敗の判定ロジックを持たず、ステートに基づく表示のみに集中。 |
 
-js
-コードをコピーする
-{
-  code: string,
-  message: string
-}
-という形式で rejected payload を統一 し、
+---
 
-Slice
+## ✅ テスト方針
 
-UI
+信頼性の高いコードベースを維持するため、以下の戦略でテストを実装しています。
 
-Snackbar
+* **完全な Mock 化**: Firebase SDK を完全に Mock し、ネットワーク環境に依存しない決定論的なテストを確保。
+* **非同期テスト**: Redux Thunk の `unwrap()` を活用し、非同期処理の完了と副作用を明示的に検証。
+* **高いカバレッジ**: ログイン成功などの正常系に加え、パスワード相違やネットワーク遮断などの異常系も網羅。
 
-が同一フォーマットで扱える設計です。
+---
 
-5. Slice は状態管理に専念
-非同期処理は行わない
+## 💡 今後の改善案
 
-fulfilled / rejected の結果のみ state に反映
+- [ ] パスワードリセット機能の実装
+- [ ] ユーザープロフィール編集（DisplayName, Avatar等）
+- [ ] アクセストークン管理の強化
+- [ ] Playwright による E2E テストの導入
 
-error は常に { code, message } 形式
+---
 
-js
-コードをコピーする
-state.error = action.payload;
-6. 成功通知のみ Thunk から Snackbar を表示
-成功時のみ showSnackbar を dispatch
+## 🔗 リポジトリ
 
-エラー時の表示責務は Thunk に持たせない
-
-js
-コードをコピーする
-dispatch(showSnackbar("サインイン成功"));
-エラー表示は Redux state を通じて行う前提の設計です。
-
-7. unwrap() による明示的な成功制御
-js
-コードをコピーする
-await dispatch(signInUserAsync(payload)).unwrap();
-成功時のみ画面遷移
-
-失敗時は catch で制御
-
-👉 実務を想定した 明示的な成功フロー制御 を採用しています。
-
-デバッグ方針
-Redux DevTools 前提
-
-console.log に依存しない
-
-Action → payload → state の流れを可視化
-
-テスト戦略
-基本方針
-ロジックを持つ層を重点的にテスト
-
-外部ライブラリの薄いラッパーは過剰にテストしない
-
-テストの重複を避け、保守コストを抑える
-
-レイヤー別テスト方針
-レイヤー	方針
-models	重点的に単体テスト
-redux/thunks	エラー分岐・マッピングのみ
-redux/slice	reducer の最小検証
-components	現時点では未実装
-
-今後の改善予定
-Snackbar の severity（success / error）対応
-
-認証エラーの共通 middleware 化
-
-authThunks / authSlice のテスト追加
-
-UI 側でのエラー表示統一
-
-学習・ポートフォリオ観点
-Redux Toolkit を用いた実務的な状態管理
-
-非同期処理と UI 更新の責務分離
-
-エラーハンドリング設計
-
-拡張・保守を意識したディレクトリ設計
-
-作者
-M I
+**GitHub**: [https://github.com/MasatakeI/email_authentication.git](https://github.com/MasatakeI/email_authentication.git)
 ```

@@ -1,4 +1,4 @@
-// test/redux/features/auth/authSlice.js
+// src/test/redux/features/auth/authSlice.js
 import { describe, test, expect } from "vitest";
 
 import {

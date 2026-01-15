@@ -1,3 +1,5 @@
+// src/components/widgets/AuthForm/AuthFormSection.jsx
+
 import React from "react";
 
 const AuthFormSection = ({

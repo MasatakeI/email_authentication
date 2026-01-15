@@ -1,4 +1,4 @@
-// common/Button/Button.jsx
+// src/components/common/Button/Button.jsx
 
 import React from "react";
 import "./Button.css";

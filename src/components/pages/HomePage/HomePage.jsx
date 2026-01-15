@@ -1,4 +1,4 @@
-// components/page/HomePage/HomePage.jsx
+// src/components/page/HomePage/HomePage.jsx
 
 import React from "react";
 import "./HomePage.css";

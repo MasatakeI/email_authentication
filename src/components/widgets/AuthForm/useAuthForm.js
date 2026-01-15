@@ -1,3 +1,5 @@
+// src/components/widgets/AuthForm/useAuthForm.js
+
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectIsLoading } from "../../../redux/features/auth/authSelectors";

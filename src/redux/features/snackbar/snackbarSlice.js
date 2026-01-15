@@ -1,4 +1,4 @@
-// src/redux/snackbar/snackbarSlice.js
+// src/redux/features/snackbar/snackbarSlice.js
 
 import { createSlice } from "@reduxjs/toolkit";
 

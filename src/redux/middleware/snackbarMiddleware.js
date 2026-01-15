@@ -1,3 +1,5 @@
+//src/redux/middleware/snackbarMiddleware.js
+
 import { isRejectedWithValue } from "@reduxjs/toolkit";
 import { showSnackbar } from "../features/snackbar/snackbarSlice";
 

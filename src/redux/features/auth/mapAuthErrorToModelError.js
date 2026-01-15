@@ -1,4 +1,4 @@
-// redux/features/auth/mapAuthErrorToModelError.js
+// src/redux/features/auth/mapAuthErrorToModelError.js
 
 import {
   ModelError,

@@ -1,4 +1,4 @@
-// components/page/MainPage/MainPage.jsx
+// src/components/page/MainPage/MainPage.jsx
 
 import React from "react";
 import "./MainPage.css";

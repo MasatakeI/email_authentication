@@ -1,4 +1,4 @@
-// test/redux/features/auth/authThunks.js
+// src/test/redux/features/auth/authThunks.js
 
 import { describe, test, expect, vi, beforeEach } from "vitest";
 

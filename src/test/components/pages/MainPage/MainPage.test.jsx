@@ -1,3 +1,5 @@
+// src/test/components/pages/MainPage/MainPage.test.jsx
+
 import { describe, test, expect, vi, beforeEach } from "vitest";
 
 import { screen, render, fireEvent, waitFor } from "@testing-library/react";

@@ -1,3 +1,5 @@
+// src/components/layout/Header/Header/jsx
+
 import React, { useEffect, useState } from "react";
 import "./Header.css";
 
