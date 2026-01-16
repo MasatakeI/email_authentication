@@ -5,48 +5,65 @@ import {
   MODEL_ERROR_CODE,
 } from "../../../models/errors/ModelError";
 
+const AUTH_ERROR_MAP = {
+  "auth/email-already-in-use": {
+    code: MODEL_ERROR_CODE.VALIDATION,
+    message: "このメールアドレスはすでに使用されています",
+  },
+  "auth/invalid-email": {
+    code: MODEL_ERROR_CODE.VALIDATION,
+    message: "メールアドレスの形式が正しくありません",
+  },
+  "auth/weak-password": {
+    code: MODEL_ERROR_CODE.VALIDATION,
+    message: "パスワードが弱すぎます",
+  },
+
+  "auth/wrong-password": {
+    code: MODEL_ERROR_CODE.AUTH_INVALID,
+    message: "パスワードが正しくありません",
+  },
+  "auth/invalid-credential": {
+    code: MODEL_ERROR_CODE.AUTH_INVALID,
+    message: "メールアドレスまたはパスワードが正しくありません",
+  },
+  "auth/user-not-found": {
+    code: MODEL_ERROR_CODE.NOT_FOUND,
+    message: "ユーザーが存在しません",
+  },
+
+  "auth/too-many-requests": {
+    code: MODEL_ERROR_CODE.AUTH_FORBIDDEN,
+    message: "しばらく時間をおいて再度お試しください",
+  },
+  "auth/network-request-failed": {
+    code: MODEL_ERROR_CODE.NETWORK,
+    message: "ネットワークエラーが発生しました",
+  },
+};
+
 export const mapAuthErrorToModelError = (error) => {
   if (error instanceof ModelError) {
     return error;
   }
 
   if (error?.code?.startsWith("auth/")) {
-    switch (error.code) {
-      case "auth/email-already-in-use":
-        return new ModelError(
-          MODEL_ERROR_CODE.VALIDATION,
-          "このメールアドレスはすでに使用されています"
-        );
+    const mapped = AUTH_ERROR_MAP[error.code];
 
-      case "auth/invalid-credential":
-      case "auth/wrong-password":
-        return new ModelError(
-          MODEL_ERROR_CODE.FORBIDDEN,
-          "メールアドレスまたはパスワードが正しくありません"
-        );
-
-      case "auth/user-not-found":
-        return new ModelError(
-          MODEL_ERROR_CODE.NOT_FOUND,
-          "ユーザーが存在しません"
-        );
-
-      case "auth/too-many-requests":
-        return new ModelError(
-          MODEL_ERROR_CODE.FORBIDDEN,
-          "しばらく時間をおいて再度お試しください"
-        );
-
-      default:
-        return new ModelError(
-          MODEL_ERROR_CODE.AUTH,
-          "認証エラーが発生しました"
-        );
+    if (mapped) {
+      return new ModelError(mapped.code, mapped.message, error);
     }
+
+    return new ModelError(
+      MODEL_ERROR_CODE.EXTERNAL,
+      "認証エラーが発生しました",
+      error
+    );
   }
 
   return new ModelError(
     MODEL_ERROR_CODE.UNKNOWN,
-    "予期せぬエラーが発生しました"
+    "予期せぬエラーが発生しました",
+    error
   );
 };

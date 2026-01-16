@@ -28,29 +28,51 @@ describe("Firebase Auth エラーを ModelError に正規化する", () => {
       "このメールアドレスはすでに使用されています",
     ],
     [
-      "auth/invalid-credential",
-      MODEL_ERROR_CODE.FORBIDDEN,
-      "メールアドレスまたはパスワードが正しくありません",
+      "auth/invalid-email",
+      MODEL_ERROR_CODE.VALIDATION,
+      "メールアドレスの形式が正しくありません",
+    ],
+    [
+      "auth/weak-password",
+      MODEL_ERROR_CODE.VALIDATION,
+      "パスワードが弱すぎます",
     ],
     [
       "auth/wrong-password",
-      MODEL_ERROR_CODE.FORBIDDEN,
+      MODEL_ERROR_CODE.AUTH_INVALID,
+      "パスワードが正しくありません",
+    ],
+    [
+      "auth/invalid-credential",
+      MODEL_ERROR_CODE.AUTH_INVALID,
       "メールアドレスまたはパスワードが正しくありません",
     ],
+
     [
       "auth/user-not-found",
       MODEL_ERROR_CODE.NOT_FOUND,
       "ユーザーが存在しません",
     ],
-  ])("%s を正規化する", (firebaseCode, expectedCode, message) => {
+    [
+      "auth/too-many-requests",
+      MODEL_ERROR_CODE.AUTH_FORBIDDEN,
+      "しばらく時間をおいて再度お試しください",
+    ],
+    [
+      "auth/network-request-failed",
+      MODEL_ERROR_CODE.NETWORK,
+      "ネットワークエラーが発生しました",
+    ],
+  ])("%s を正規化する", (firebaseCode, modelCode, message) => {
     const firebaseError = { code: firebaseCode };
 
     const result = mapAuthErrorToModelError(firebaseError);
 
     expect(result).toBeInstanceOf(ModelError);
     expect(result).toMatchObject({
-      code: expectedCode,
+      code: modelCode,
       message,
+      cause: firebaseError,
     });
   });
 
@@ -59,7 +81,7 @@ describe("Firebase Auth エラーを ModelError に正規化する", () => {
 
     const result = mapAuthErrorToModelError(error);
     expect(result).toMatchObject({
-      code: MODEL_ERROR_CODE.AUTH,
+      code: MODEL_ERROR_CODE.EXTERNAL,
       message: "認証エラーが発生しました",
     });
   });

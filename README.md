@@ -17,6 +17,7 @@ Firebase Authentication を利用した、メール・パスワード認証（�
 
 ### フロントエンド
 
+- **JavaScript**
 - **Framework**: React
 - **State Management**: Redux Toolkit (Thunk)
 - **Routing**: React Router
@@ -112,6 +113,59 @@ Firebase Authentication の `onAuthStateChanged` を購読します。
 UI 側はエラー処理の詳細を意識せず、表示ロジックに集中できます。
 
 ---
+
+## エラーコード設計（Error Code Policy）
+
+本アプリでは、Firebase や外部 API 由来のエラーを
+アプリケーション共通のエラーコード体系に正規化しています。
+
+UI や Middleware は エラーの詳細実装を知らずに振る舞える よう設計されています。
+
+エラーコード一覧
+MODEL_ERROR_CODE 概要 主な発生源 UI の扱い
+AUTH_INVALID 入力値や認証条件が不正 無効なメール形式 / 弱いパスワード / 未認証メール 入力エラーとして表示
+AUTH_FORBIDDEN 認証情報はあるが許可されていない パスワード不一致 / 試行回数超過 エラーメッセージ表示
+NETWORK ネットワーク・通信障害 オフライン / タイムアウト 再試行を促す
+EXTERNAL 外部サービス依存の不明エラー Firebase 側の想定外エラー 汎用エラー表示
+Firebase Auth エラーとの対応関係
+Firebase エラーコード MODEL_ERROR_CODE
+auth/invalid-email AUTH_INVALID
+auth/weak-password AUTH_INVALID
+auth/email-already-in-use AUTH_INVALID
+auth/wrong-password AUTH_FORBIDDEN
+auth/user-not-found AUTH_FORBIDDEN
+auth/too-many-requests AUTH_FORBIDDEN
+Firebase 由来の不明エラー EXTERNAL
+通信エラー NETWORK
+設計意図
+
+Firebase のエラーコードを UI に漏らさない
+
+UI / Middleware / Test は MODEL_ERROR_CODE のみを基準に判断
+
+外部 API 変更時も、影響範囲を mapAuthErrorToModelError に限定
+
+この設計により、
+
+Snackbar 表示
+
+フォームエラーメッセージ
+
+テストの期待値
+
+を 一貫したルールで制御できます。
+
+実装責務の分離
+レイヤ 責務
+Model Firebase エラーの捕捉
+Mapper Firebase → ModelError 変換
+Redux Thunk rejectWithValue(ModelError)
+Middleware error.code に基づく通知制御
+UI 表示のみに専念
+補足
+
+本設計では 「エラーの種類」ではなく「UI がどう振る舞うべきか」 を軸に分類しています。
+そのため Firebase の詳細なエラーコードを直接扱うことはありません。
 
 ## テスト方針
 

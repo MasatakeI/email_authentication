@@ -122,7 +122,7 @@ describe("AuthModel", () => {
       const mockUser = {
         uid: "test-id",
         email: "xxx@zzz.com",
-        emailVerified: false,
+        emailVerified: true,
       };
       signInWithEmailAndPassword.mockResolvedValue({
         user: mockUser,
@@ -135,7 +135,7 @@ describe("AuthModel", () => {
       expect(result).toEqual({
         uid: "test-id",
         email: "xxx@zzz.com",
-        emailVerified: false,
+        emailVerified: true,
       });
 
       expect(signInWithEmailAndPassword).toHaveBeenCalledWith(
@@ -145,7 +145,9 @@ describe("AuthModel", () => {
       );
     });
     test("失敗:バリデーションエラー Firebaseは呼ばれない", async () => {
-      await expect(signInUser("", "123")).rejects.toBeInstanceOf(ModelError);
+      await expect(signInUser("", "123")).rejects.toMatchObject({
+        code: MODEL_ERROR_CODE.VALIDATION,
+      });
 
       expect(signInWithEmailAndPassword).not.toHaveBeenCalled();
     });
@@ -156,6 +158,22 @@ describe("AuthModel", () => {
       signInWithEmailAndPassword.mockRejectedValue(firebaseError);
 
       await expect(signInUser(email, password)).rejects.toBe(firebaseError);
+    });
+
+    test("失敗:未認証メールの場合はログインできない", async () => {
+      const mockUser = {
+        uid: "test-id",
+        email: "xxx@zzz.com",
+        emailVerified: false,
+      };
+      signInWithEmailAndPassword.mockResolvedValue({
+        user: mockUser,
+      });
+
+      await expect(signInUser(mockUser.email, "xxxxxx")).rejects.toMatchObject({
+        code: MODEL_ERROR_CODE.AUTH,
+        message: "認証されていないメールアドレスのためログインできません",
+      });
     });
   });
 

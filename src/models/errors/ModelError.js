@@ -1,19 +1,21 @@
 // src/models/errors/ModelError.js
 
 export const MODEL_ERROR_CODE = {
-  NOT_FOUND: "NOT_FOUND",
   VALIDATION: "VALIDATION",
-  INVALID_DATA: "INVALID_DATA",
-  FORBIDDEN: "FORBIDDEN",
-  FIRESTORE: "FIRESTORE",
+  AUTH_INVALID: "AUTH_INVALID",
+  AUTH_FORBIDDEN: "AUTH_FORBIDDEN",
+  NOT_FOUND: "NOT_FOUND",
+  NETWORK: "NETWORK",
+  EXTERNAL: "EXTERNAL",
+
   UNKNOWN: "UNKNOWN",
-  AUTH: "AUTH",
 };
 
 export class ModelError extends Error {
-  constructor(code, message) {
+  constructor(code, message, cause) {
     super(message);
     this.name = "ModelError";
     this.code = code;
+    this.cause = cause;
   }
 }

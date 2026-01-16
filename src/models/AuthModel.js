@@ -75,7 +75,16 @@ export const signInUser = async (email, password) => {
     password
   );
 
-  return toAuthUser(userCredential.user);
+  const user = userCredential.user;
+
+  if (!user.emailVerified) {
+    throw new ModelError(
+      MODEL_ERROR_CODE.AUTH,
+      "認証されていないメールアドレスのためログインできません"
+    );
+  }
+
+  return toAuthUser(user);
 };
 
 export const signOutUser = async () => {

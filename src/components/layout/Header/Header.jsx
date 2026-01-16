@@ -3,9 +3,6 @@
 import React, { useEffect, useState } from "react";
 import "./Header.css";
 
-import { Link } from "react-router";
-// import Tooltip from "@mui/material/Tooltip";
-
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
 
@@ -20,11 +17,9 @@ const Header = () => {
 
   return (
     <div className={`header ${isScrolled ? "scrolled" : ""}`}>
-      {/* <Tooltip title="ホームへ戻る"> */}
-      <Link to="/" className="logo" aria-label="ホームへ戻る">
+      <div to="/" className="logo" aria-label="ホームへ戻る">
         メール・パスワード認証
-      </Link>
-      {/* </Tooltip> */}
+      </div>
     </div>
   );
 };
