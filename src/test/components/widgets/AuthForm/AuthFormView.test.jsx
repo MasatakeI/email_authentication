@@ -1,55 +1,87 @@
 // src/test/components/widgets/AuthForm/AuthFormView.test.jsx
 
-import { describe, test, expect, vi } from "vitest";
+import { describe, test, expect, vi, beforeEach } from "vitest";
 
 import { screen, render } from "@testing-library/react";
 
-import AuthFormSection from "../../../../components/widgets/AuthForm/AuthFormSection";
-import AuthFormView from "../../../../components/widgets/AuthForm/AuthFormView";
+import AuthFormSection from "@/components/widgets/AuthForm/AuthFormSection";
+import AuthFormView from "@/components/widgets/AuthForm/AuthFormView";
+import { ExploreTwoTone } from "@mui/icons-material";
 
-vi.mock("../../../../components/widgets/AuthForm/AuthFormSection", () => ({
+vi.mock("@/components/widgets/AuthForm/AuthFormSection", () => ({
   default: vi.fn(({ title }) => (
     <div data-testid={`section-${title}`}>{title}</div>
   )),
 }));
 
 describe("AuthFormView", () => {
-  test("登録,ログインのセクションが表示されAuthFormSectionに正しいpropsが渡される", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  const mockSignUpState = {
+    email: "signup@test.com",
+    setEmail: vi.fn(),
+    password: "zzz123",
+    setPassword: vi.fn(),
+    onSubmit: vi.fn(),
+  };
+  const mockSignInState = {
+    email: "signin@test.com",
+    setEmail: vi.fn(),
+    password: "zzz456",
+    setPassword: vi.fn(),
+    onSubmit: vi.fn(),
+  };
+
+  test("登録のセクションが表示されAuthFormSectionに正しいpropsが渡される", () => {
     render(
       <AuthFormView
-        isLoading={true}
-        handleSignIn={vi.fn()}
-        handleSignUp={vi.fn()}
-        signUpEmail="a"
-        setSignUpEmail={vi.fn()}
-        signUpPassword="b"
-        setSignUpPassword={vi.fn()}
-        signInEmail="a"
-        setSignInEmail={vi.fn()}
-        signInPassword="b"
-        setSignInPassword={vi.fn()}
-      />
+        isLoading={false}
+        signUpState={mockSignUpState}
+        signInState={mockSignInState}
+      />,
     );
 
     expect(screen.getByTestId("section-登録")).toBeInTheDocument();
     expect(screen.getByTestId("section-ログイン")).toBeInTheDocument();
 
-    expect(AuthFormSection.mock.calls[0][0]).toEqual(
+    // 登録セクションへのProps検証
+    expect(AuthFormSection).toHaveBeenNthCalledWith(
+      1,
       expect.objectContaining({
         title: "登録",
-        email: "a",
-        password: "b",
-        isLoading: true,
-      })
+        email: "signup@test.com", // signUpStateから渡っているか
+        onSubmit: mockSignUpState.onSubmit,
+      }),
+      undefined,
     );
 
-    expect(AuthFormSection.mock.calls[1][0]).toEqual(
+    // ログインセクションへのProps検証
+    expect(AuthFormSection).toHaveBeenNthCalledWith(
+      2,
       expect.objectContaining({
         title: "ログイン",
-        email: "a",
-        password: "b",
-        isLoading: true,
-      })
+        email: "signin@test.com", // signUpStateから渡っているか
+        onSubmit: mockSignInState.onSubmit,
+      }),
+      undefined,
+    );
+  });
+
+  test("isLoading=true の時 各セクションにisLoading=trueが伝わる", () => {
+    render(
+      <AuthFormView
+        isLoading={true}
+        signUpState={mockSignUpState}
+        signInState={mockSignInState}
+      />,
+    );
+
+    expect(AuthFormSection).toHaveBeenNthCalledWith(
+      2,
+      expect.objectContaining({ isLoading: true }),
+      undefined,
     );
   });
 });

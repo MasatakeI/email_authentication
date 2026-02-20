@@ -1,16 +1,15 @@
 // src/test/components/widgets/AuthForm/useAuthForm.test.jsx
 
 import { describe, test, expect, vi, beforeEach } from "vitest";
-import { renderHook, act } from "@testing-library/react";
+import { act } from "@testing-library/react";
 
-import { Provider } from "react-redux";
+import * as authThunks from "@/redux/features/auth/authThunks";
 
-import { configureStore } from "@reduxjs/toolkit";
-
-import * as authThunks from "../../../../redux/features/auth/authThunks";
-
-import authReducer from "../../../../redux/features/auth/authSlice";
+import authReducer, { authInitialState } from "@/redux/features/auth/authSlice";
+import snackbarReducer from "@/redux/features/snackbar/snackbarSlice";
 import { useAuthForm } from "../../../../components/widgets/AuthForm/useAuthForm";
+import { snackbarInitialState } from "@/redux/features/snackbar/snackbarSlice";
+import { renderHookWithStore } from "@/test/utils/renderHookWithStore";
 
 const navigateMock = vi.fn();
 vi.mock("react-router", async () => {
@@ -21,52 +20,54 @@ vi.mock("react-router", async () => {
   };
 });
 
-const setup = (preloadedState) => {
-  const store = configureStore({
-    reducer: {
-      auth: authReducer,
-    },
-    preloadedState,
-  });
-
-  const wrapper = ({ children }) => (
-    <Provider store={store}>{children}</Provider>
-  );
-
-  return { store, wrapper };
-};
-
-const baseState = {
-  auth: {
-    user: { uid: 123 },
-    isLoading: false,
-    error: null,
-    authChecked: false,
-  },
-};
-
 describe("useAuthForm", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
-  describe("handleSignUp", () => {
-    test("成功:signUpUserAsyncが正しいpayloadでdispatchされる", async () => {
-      const spy = vi
-        .spyOn(authThunks, "signUpUserAsync")
-        .mockImplementation(() => () => ({
-          unwrap: () => Promise.resolve(),
-        }));
-      const { wrapper } = setup(baseState);
-      const { result } = renderHook(() => useAuthForm(), { wrapper });
+  const commonOptions = {
+    reducers: {
+      auth: authReducer,
+      snackbar: snackbarReducer,
+    },
+    preloadedState: {
+      auth: { ...authInitialState },
+      snackbar: { ...snackbarInitialState },
+    },
+  };
+
+  describe("正常系 共通処理:thunk関数が正しいpayloadでdispatchされる", () => {
+    test.each([
+      {
+        title: "handleSignUp",
+        thunk: "signUpUserAsync",
+        stateKey: "signUpState",
+        typeKey: "auth/signUp/pending",
+      },
+      {
+        title: "handleSignIn",
+        thunk: "signInUserAsync",
+        stateKey: "signInState",
+        typeKey: "auth/signIn/pending",
+      },
+    ])("$title", async ({ thunk, stateKey, typeKey }) => {
+      const spy = vi.spyOn(authThunks, thunk).mockReturnValue({
+        type: typeKey,
+        unwrap: () => Promise.resolve({}),
+      });
+      const { result } = renderHookWithStore({
+        hook: () => useAuthForm(),
+        ...commonOptions,
+      });
 
       act(() => {
-        result.current.setSignUpEmail("xxx@zzz.com");
-        result.current.setSignUpPassword("yyyyyy");
+        result.current[stateKey].setEmail("xxx@zzz.com");
+        result.current[stateKey].setPassword("yyyyyy");
       });
 
       await act(async () => {
-        await result.current.handleSignUp({
+        await result.current[stateKey].onSubmit({
           preventDefault: vi.fn(),
         });
       });
@@ -75,56 +76,94 @@ describe("useAuthForm", () => {
         email: "xxx@zzz.com",
         password: "yyyyyy",
       });
+
+      expect(result.current[stateKey].email).toBe("");
+      expect(result.current[stateKey].password).toBe("");
+
+      if (thunk === "signInUserAsync") {
+        expect(navigateMock).toHaveBeenCalledWith("/main");
+      }
     });
   });
 
-  describe("handleSignIn", () => {
-    test("成功: navigateが呼ばれる", async () => {
-      const signInSpy = vi
-        .spyOn(authThunks, "signInUserAsync")
-        .mockImplementation(() => () => ({
-          unwrap: () => Promise.resolve({ uid: "test-user" }),
-        }));
-      const { wrapper } = setup(baseState);
-      const { result } = renderHook(() => useAuthForm(), { wrapper });
+  describe("バリデーション 共通処理 : isLoading=trueの時 dispatchされない", () => {
+    test.each([
+      {
+        title: "handleSignUp",
+        thunk: "signUpUserAsync",
+        stateKey: "signUpState",
+        typeKey: "auth/signUp/pending",
+      },
+      {
+        title: "handleSignIn",
+        thunk: "signInUserAsync",
+        stateKey: "signInState",
+        typeKey: "auth/signIn/pending",
+      },
+    ])("$title", async ({ thunk, stateKey, typeKey }) => {
+      const spy = vi.spyOn(authThunks, thunk).mockReturnValue({
+        type: typeKey,
+        unwrap: () => Promise.resolve({}),
+      });
+      const { result } = renderHookWithStore({
+        hook: () => useAuthForm(),
+        ...commonOptions,
+        preloadedState: {
+          ...commonOptions.preloadedState,
+          auth: { ...authInitialState, isLoading: true },
+        },
+      });
 
       act(() => {
-        result.current.setSignInEmail("xxx@zzz.com");
-        result.current.setSignInPassword("yyyyyy");
+        result.current[stateKey].setEmail("xxx@zzz.com");
+        result.current[stateKey].setPassword("yyyyyy");
       });
 
       await act(async () => {
-        result.current.handleSignIn({
+        await result.current[stateKey].onSubmit({
           preventDefault: vi.fn(),
         });
       });
 
-      expect(signInSpy).toHaveBeenCalledWith({
-        email: "xxx@zzz.com",
-        password: "yyyyyy",
-      });
-
-      expect(navigateMock).toHaveBeenCalledWith("/main");
+      expect(spy).not.toHaveBeenCalled();
     });
-    test("失敗:navigateされない", async () => {
-      vi.spyOn(authThunks, "signInUserAsync").mockImplementation(() => () => ({
-        unwrap: () => Promise.reject(new Error("login failed")),
-      }));
-      const { wrapper } = setup(baseState);
-      const { result } = renderHook(() => useAuthForm(), { wrapper });
+  });
+
+  describe("異常系 共通処理 : stateは更新されない", () => {
+    test.each([
+      {
+        title: "handleSignUp",
+        thunk: "signUpUserAsync",
+        stateKey: "signUpState",
+        typeKey: "auth/signUp/rejected",
+      },
+      {
+        title: "handleSignIn",
+        thunk: "signInUserAsync",
+        stateKey: "signInState",
+        typeKey: "auth/signIn/rejected",
+      },
+    ])("$title", async ({ thunk, stateKey, typeKey }) => {
+      vi.spyOn(authThunks, thunk).mockReturnValue({
+        type: typeKey,
+        unwrap: () => Promise.reject(new Error("エラー")),
+      });
+      const { result } = renderHookWithStore({
+        hook: () => useAuthForm(),
+        ...commonOptions,
+      });
 
       act(() => {
-        result.current.setSignInEmail("xxx@zzz.com");
-        result.current.setSignInPassword("yyyyyy");
+        result.current[stateKey].setEmail("xxx@zzz.com");
       });
 
       await act(async () => {
-        result.current.handleSignIn({
+        await result.current[stateKey].onSubmit({
           preventDefault: vi.fn(),
         });
       });
-
-      expect(navigateMock).not.toHaveBeenCalled();
+      expect(result.current[stateKey].email).toBe("xxx@zzz.com");
+      expect(console.error).toHaveBeenCalled();
     });
   });
 });

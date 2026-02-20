@@ -3,15 +3,16 @@
 import React from "react";
 
 const AuthFormSection = ({
-  title,
+  title = "フォーム",
+  emailId = "email-id",
+  passwordId = "password-id",
+  isLoading,
+
   onSubmit,
-  emailId,
   email,
   setEmail,
-  passwordId,
   password,
   setPassword,
-  isLoading,
 }) => {
   return (
     <div>

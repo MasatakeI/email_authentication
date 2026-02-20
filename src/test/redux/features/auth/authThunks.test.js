@@ -6,31 +6,42 @@ import {
   signUpUserAsync,
   signInUserAsync,
   signOutUserAsync,
-} from "../../../../redux/features/auth/authThunks";
+  initAuthAsync,
+} from "@/redux/features/auth/authThunks";
+
+import {
+  clearUser,
+  setAuthChecked,
+  setUser,
+} from "@/redux/features/auth/authSlice";
 
 import {
   signInUser,
   signOutUser,
   signUpUser,
-} from "../../../../models/AuthModel";
+  subscribeAuth,
+} from "@/models/AuthModel";
 
-vi.mock("../../../../models/AuthModel", () => ({
+vi.mock("@/models/AuthModel", () => ({
   signInUser: vi.fn(),
   signOutUser: vi.fn(),
   signUpUser: vi.fn(),
+  subscribeAuth: vi.fn(),
 }));
 
-import { mapAuthErrorToModelError } from "../../../../redux/features/auth/mapAuthErrorToModelError";
-vi.mock("../../../../redux/features/auth/mapAuthErrorToModelError", () => ({
+vi.mock("@/redux/features/auth/authSlice", () => ({
+  clearUser: vi.fn(),
+  setAuthChecked: vi.fn(),
+  setUser: vi.fn(),
+}));
+
+import { mapAuthErrorToModelError } from "@/redux/features/auth/mapAuthErrorToModelError";
+vi.mock("@/redux/features/auth/mapAuthErrorToModelError", () => ({
   mapAuthErrorToModelError: vi.fn(),
 }));
 
-import {
-  MODEL_ERROR_CODE,
-  ModelError,
-} from "../../../../models/errors/ModelError";
-
-import { mockUser } from "../../fixtures/authFixture";
+import { MODEL_ERROR_CODE, ModelError } from "@/models/errors/ModelError";
+import { mockUser } from "@/test/redux/fixtures/authFixture";
 
 // ヘルパー関数
 const mockSuccess = (fn, value) => fn.mockResolvedValue(value);
@@ -48,100 +59,106 @@ describe("authThunks", () => {
     vi.clearAllMocks();
   });
 
-  describe("signUpUserAsync", () => {
-    test("成功:サインアップしたuser情報を返す", async () => {
-      mockSuccess(signUpUser, mockUser);
+  describe("initUserAsync", () => {
+    test("認証状態が変化した時に setUserとsetAuthCheckedが dispatchされる", async () => {
+      let authCallback;
 
-      const result = await callThunk(signUpUserAsync, {
-        email: mockUser.email,
-        password: mockUser.password,
+      subscribeAuth.mockImplementation((cb) => {
+        authCallback = cb;
+        return vi.fn();
       });
 
-      expect(result.payload).toEqual(mockUser);
-      expect(signUpUser).toHaveBeenCalledWith(
-        mockUser.email,
-        mockUser.password
-      );
-    });
-    test("失敗:ModelErrorの場合,rejectWithValueのpayloadを返す", async () => {
-      const normalizedError = new ModelError(
-        MODEL_ERROR_CODE.VALIDATION,
-        "エラー"
-      );
+      const unsubscribe = initAuthAsync()(dispatch);
+      authCallback(mockUser);
 
-      mockError(signUpUser, normalizedError.code, normalizedError.message);
+      expect(dispatch).toHaveBeenCalledWith(setUser(mockUser));
+      expect(dispatch).toHaveBeenCalledWith(setAuthChecked());
 
-      mapAuthErrorToModelError.mockReturnValue(normalizedError);
+      authCallback(null);
+      expect(dispatch).toHaveBeenCalledWith(clearUser());
 
-      const result = await callThunk(signUpUserAsync, {
-        email: "",
-        password: "",
-      });
-
-      expect(result.payload).toEqual({
-        code: MODEL_ERROR_CODE.VALIDATION,
-        message: "エラー",
-      });
-      expect(mapAuthErrorToModelError).toHaveBeenCalled();
+      expect(typeof unsubscribe).toBe("function");
     });
   });
 
-  describe("signInUserAsync", () => {
-    test("成功:サインインしたuser情報を返す", async () => {
-      mockSuccess(signInUser, mockUser);
+  describe("正常系 共通処理 ", () => {
+    test.each([
+      {
+        title: "signUpUserAsync",
+        fn: signUpUser,
+        value: mockUser,
+        thunk: signUpUserAsync,
+        params: {
+          email: mockUser.email,
+          password: mockUser.password,
+        },
+      },
+      {
+        title: "signInUserAsync",
+        fn: signInUser,
+        value: mockUser,
+        thunk: signInUserAsync,
+        params: {
+          email: mockUser.email,
+          password: mockUser.password,
+        },
+      },
+      {
+        title: "signOutUserAsync",
+        fn: signOutUser,
+        value: undefined,
+        thunk: signOutUserAsync,
+        params: undefined,
+      },
+    ])("$title", async ({ fn, thunk, value, params }) => {
+      mockSuccess(fn, value);
 
-      const result = await callThunk(signInUserAsync, {
-        email: mockUser.email,
-        password: mockUser.password,
-      });
+      const result = await callThunk(thunk, params);
 
-      expect(result.payload).toEqual(mockUser);
-      expect(signInUser).toHaveBeenCalledWith(
-        mockUser.email,
-        mockUser.password
+      expect(result.payload).toEqual(value);
+
+      if (params) {
+        expect(fn).toHaveBeenCalledWith(mockUser.email, mockUser.password);
+      } else {
+        expect(fn).toHaveBeenCalledWith();
+      }
+
+      expect(dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({
+          type: expect.stringContaining("showSnackbar"),
+        }),
       );
-    });
-    test("失敗:ModelErrorの場合,rejectWithValueのpayloadを返す", async () => {
-      const normalizedError = new ModelError(
-        MODEL_ERROR_CODE.VALIDATION,
-        "エラー"
-      );
-
-      mockError(signInUser, normalizedError.code, normalizedError.message);
-
-      mapAuthErrorToModelError.mockReturnValue(normalizedError);
-
-      const result = await callThunk(signInUserAsync, {
-        email: "",
-        password: "",
-      });
-
-      expect(result.payload).toEqual({
-        code: MODEL_ERROR_CODE.VALIDATION,
-        message: "エラー",
-      });
-      expect(mapAuthErrorToModelError).toHaveBeenCalled();
     });
   });
 
-  describe("signOutUserAsync", () => {
-    test("成功:signOutUserが呼ばれる", async () => {
-      mockSuccess(signOutUser);
-      const result = await callThunk(signOutUserAsync);
-      expect(result.payload).toBe(undefined);
-      expect(signOutUser).toHaveBeenCalledTimes(1);
-    });
-    test("失敗:ModelErrorの場合,rejectWithValueのpayloadを返す", async () => {
-      const normalizedError = new ModelError(
-        MODEL_ERROR_CODE.VALIDATION,
-        "エラー"
-      );
+  describe("異常系 共通処理 : ModelErrorの場合,rejectWithValueのpayloadを返す", () => {
+    test.each([
+      {
+        fn: signUpUser,
+        thunk: signUpUserAsync,
+        title: "signUpUserAsync",
+      },
+      {
+        fn: signInUser,
+        thunk: signInUserAsync,
+        title: "signInUserAsync",
+      },
+      {
+        fn: signOutUser,
+        thunk: signOutUserAsync,
+        title: "signOutUserAsync",
+      },
+    ])("$title の時", async ({ fn, thunk }) => {
+      const normalizedError = new ModelError({
+        code: MODEL_ERROR_CODE.VALIDATION,
+        message: "エラー",
+      });
 
-      mockError(signOutUser, normalizedError.code, normalizedError.message);
+      mockError(fn, normalizedError.code, normalizedError.message);
 
       mapAuthErrorToModelError.mockReturnValue(normalizedError);
 
-      const result = await callThunk(signOutUserAsync, {
+      const result = await callThunk(thunk, {
         email: "",
         password: "",
       });

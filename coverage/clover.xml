@@ -1,49 +1,326 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1767929866068" clover="3.2.0">
-  <project timestamp="1767929866068" name="All files">
-    <metrics statements="26" coveredstatements="26" conditionals="6" coveredconditionals="6" methods="5" coveredmethods="5" elements="37" coveredelements="37" complexity="0" loc="26" ncloc="26" packages="3" files="3" classes="3"/>
+<coverage generated="1771563082579" clover="3.2.0">
+  <project timestamp="1771563082579" name="All files">
+    <metrics statements="222" coveredstatements="221" conditionals="166" coveredconditionals="113" methods="56" coveredmethods="53" elements="444" coveredelements="387" complexity="0" loc="222" ncloc="222" packages="13" files="20" classes="20"/>
+    <package name="components.common.Button">
+      <metrics statements="7" coveredstatements="7" conditionals="10" coveredconditionals="6" methods="1" coveredmethods="1"/>
+      <file name="Button.css" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/components/common/Button/Button.css">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="Button.jsx" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/components/common/Button/Button.jsx">
+        <metrics statements="7" coveredstatements="7" conditionals="10" coveredconditionals="6" methods="1" coveredmethods="1"/>
+        <line num="6" count="8" type="stmt"/>
+        <line num="9" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="10" count="8" type="cond" truecount="2" falsecount="0"/>
+        <line num="12" count="8" type="stmt"/>
+        <line num="15" count="8" type="stmt"/>
+        <line num="18" count="8" type="cond" truecount="2" falsecount="4"/>
+        <line num="21" count="8" type="stmt"/>
+      </file>
+    </package>
+    <package name="components.pages.MainPage">
+      <metrics statements="13" coveredstatements="13" conditionals="8" coveredconditionals="4" methods="2" coveredmethods="2"/>
+      <file name="MainPage.css" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/components/pages/MainPage/MainPage.css">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+      <file name="MainPage.jsx" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/components/pages/MainPage/MainPage.jsx">
+        <metrics statements="13" coveredstatements="13" conditionals="8" coveredconditionals="4" methods="2" coveredmethods="2"/>
+        <line num="13" count="3" type="stmt"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="15" count="3" type="cond" truecount="2" falsecount="2"/>
+        <line num="17" count="3" type="stmt"/>
+        <line num="18" count="2" type="stmt"/>
+        <line num="19" count="2" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="25" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="27" count="3" type="stmt"/>
+        <line num="28" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="32" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="components.routing.PrivateRoute">
+      <metrics statements="10" coveredstatements="10" conditionals="12" coveredconditionals="9" methods="1" coveredmethods="1"/>
+      <file name="PrivateRoute.jsx" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/components/routing/PrivateRoute/PrivateRoute.jsx">
+        <metrics statements="10" coveredstatements="10" conditionals="12" coveredconditionals="9" methods="1" coveredmethods="1"/>
+        <line num="10" count="4" type="stmt"/>
+        <line num="11" count="4" type="stmt"/>
+        <line num="12" count="4" type="stmt"/>
+        <line num="14" count="4" type="cond" truecount="3" falsecount="1"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="18" count="3" type="cond" truecount="3" falsecount="1"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="22" count="2" type="cond" truecount="3" falsecount="1"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="components.widgets.AuthForm">
+      <metrics statements="61" coveredstatements="61" conditionals="92" coveredconditionals="58" methods="7" coveredmethods="7"/>
+      <file name="AuthFormSection.jsx" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/components/widgets/AuthForm/AuthFormSection.jsx">
+        <metrics statements="19" coveredstatements="19" conditionals="42" coveredconditionals="18" methods="3" coveredmethods="3"/>
+        <line num="5" count="4" type="stmt"/>
+        <line num="6" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="7" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="8" count="4" type="cond" truecount="2" falsecount="2"/>
+        <line num="18" count="4" type="stmt"/>
+        <line num="19" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="20" count="4" type="stmt"/>
+        <line num="21" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="22" count="4" type="stmt"/>
+        <line num="26" count="11" type="cond" truecount="2" falsecount="3"/>
+        <line num="27" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="29" count="4" type="cond" truecount="1" falsecount="1"/>
+        <line num="30" count="4" type="stmt"/>
+        <line num="34" count="6" type="cond" truecount="2" falsecount="3"/>
+        <line num="35" count="4" type="cond" truecount="2" falsecount="2"/>
+        <line num="37" count="4" type="stmt"/>
+        <line num="39" count="4" type="cond" truecount="2" falsecount="6"/>
+        <line num="40" count="4" type="cond" truecount="2" falsecount="2"/>
+        <line num="41" count="4" type="stmt"/>
+      </file>
+      <file name="AuthFormView.jsx" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/components/widgets/AuthForm/AuthFormView.jsx">
+        <metrics statements="7" coveredstatements="7" conditionals="18" coveredconditionals="9" methods="1" coveredmethods="1"/>
+        <line num="8" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="10" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="13" count="2" type="cond" truecount="2" falsecount="2"/>
+        <line num="21" count="2" type="cond" truecount="1" falsecount="1"/>
+        <line num="24" count="2" type="cond" truecount="2" falsecount="2"/>
+        <line num="32" count="2" type="cond" truecount="2" falsecount="2"/>
+        <line num="34" count="2" type="stmt"/>
+      </file>
+      <file name="useAuthForm.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/components/widgets/AuthForm/useAuthForm.js">
+        <metrics statements="35" coveredstatements="35" conditionals="32" coveredconditionals="31" methods="3" coveredmethods="3"/>
+        <line num="14" count="14" type="stmt"/>
+        <line num="15" count="14" type="stmt"/>
+        <line num="16" count="14" type="stmt"/>
+        <line num="18" count="14" type="stmt"/>
+        <line num="20" count="14" type="stmt"/>
+        <line num="21" count="14" type="stmt"/>
+        <line num="22" count="14" type="stmt"/>
+        <line num="23" count="14" type="cond" truecount="6" falsecount="0"/>
+        <line num="25" count="14" type="stmt"/>
+        <line num="26" count="3" type="stmt"/>
+        <line num="27" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="28" count="2" type="stmt"/>
+        <line num="29" count="2" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="41" count="14" type="cond" truecount="7" falsecount="0"/>
+        <line num="43" count="14" type="stmt"/>
+        <line num="44" count="3" type="stmt"/>
+        <line num="45" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="46" count="2" type="stmt"/>
+        <line num="47" count="2" type="stmt"/>
+        <line num="54" count="1" type="stmt"/>
+        <line num="56" count="1" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
+        <line num="58" count="1" type="stmt"/>
+        <line num="59" count="1" type="stmt"/>
+        <line num="61" count="14" type="cond" truecount="5" falsecount="0"/>
+        <line num="63" count="14" type="stmt"/>
+        <line num="69" count="14" type="cond" truecount="5" falsecount="0"/>
+        <line num="70" count="14" type="stmt"/>
+        <line num="76" count="14" type="cond" truecount="4" falsecount="1"/>
+        <line num="78" count="14" type="stmt"/>
+        <line num="82" count="14" type="stmt"/>
+      </file>
+    </package>
     <package name="firebase">
       <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
       <file name="auth.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/firebase/auth.js">
         <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
-        <line num="6" count="1" type="stmt"/>
-        <line num="16" count="1" type="stmt"/>
-        <line num="18" count="1" type="stmt"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="16" count="3" type="stmt"/>
+        <line num="18" count="3" type="stmt"/>
       </file>
     </package>
     <package name="models">
-      <metrics statements="19" coveredstatements="19" conditionals="6" coveredconditionals="6" methods="4" coveredmethods="4"/>
+      <metrics statements="30" coveredstatements="29" conditionals="14" coveredconditionals="13" methods="8" coveredmethods="8"/>
       <file name="AuthModel.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/models/AuthModel.js">
-        <metrics statements="19" coveredstatements="19" conditionals="6" coveredconditionals="6" methods="4" coveredmethods="4"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="19" count="1" type="stmt"/>
-        <line num="20" count="9" type="cond" truecount="4" falsecount="0"/>
-        <line num="21" count="3" type="stmt"/>
-        <line num="24" count="6" type="cond" truecount="2" falsecount="0"/>
-        <line num="25" count="2" type="stmt"/>
-        <line num="32" count="1" type="stmt"/>
-        <line num="33" count="6" type="stmt"/>
-        <line num="34" count="6" type="stmt"/>
-        <line num="40" count="1" type="stmt"/>
-        <line num="42" count="1" type="stmt"/>
-        <line num="44" count="1" type="stmt"/>
-        <line num="47" count="1" type="stmt"/>
-        <line num="48" count="3" type="stmt"/>
-        <line num="49" count="3" type="stmt"/>
-        <line num="55" count="1" type="stmt"/>
-        <line num="57" count="1" type="stmt"/>
-        <line num="60" count="1" type="stmt"/>
-        <line num="61" count="2" type="stmt"/>
+        <metrics statements="30" coveredstatements="29" conditionals="14" coveredconditionals="13" methods="8" coveredmethods="8"/>
+        <line num="15" count="3" type="stmt"/>
+        <line num="20" count="3" type="stmt"/>
+        <line num="21" count="6" type="cond" truecount="4" falsecount="0"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="28" count="4" type="cond" truecount="2" falsecount="0"/>
+        <line num="29" count="2" type="stmt"/>
+        <line num="36" count="3" type="stmt"/>
+        <line num="37" count="4" type="cond" truecount="4" falsecount="0"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="45" count="3" type="stmt"/>
+        <line num="51" count="3" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="53" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="54" count="1" type="stmt"/>
+        <line num="56" count="0" type="stmt"/>
+        <line num="61" count="3" type="stmt"/>
+        <line num="62" count="6" type="stmt"/>
+        <line num="63" count="6" type="stmt"/>
+        <line num="69" count="1" type="stmt"/>
+        <line num="71" count="1" type="stmt"/>
+        <line num="73" count="1" type="stmt"/>
+        <line num="76" count="3" type="stmt"/>
+        <line num="77" count="4" type="stmt"/>
+        <line num="78" count="4" type="stmt"/>
+        <line num="84" count="2" type="stmt"/>
+        <line num="86" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="87" count="1" type="stmt"/>
+        <line num="93" count="1" type="stmt"/>
+        <line num="96" count="3" type="stmt"/>
+        <line num="97" count="2" type="stmt"/>
       </file>
     </package>
     <package name="models.errors">
-      <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
       <file name="ModelError.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/models/errors/ModelError.js">
-        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
-        <line num="3" count="1" type="stmt"/>
-        <line num="12" count="5" type="stmt"/>
-        <line num="13" count="5" type="stmt"/>
-        <line num="14" count="5" type="stmt"/>
+        <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="1" coveredmethods="1"/>
+        <line num="3" count="6" type="stmt"/>
+        <line num="16" count="24" type="stmt"/>
+        <line num="17" count="24" type="stmt"/>
+        <line num="18" count="24" type="stmt"/>
+        <line num="19" count="24" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="redux.features.auth">
+      <metrics statements="60" coveredstatements="60" conditionals="8" coveredconditionals="8" methods="22" coveredmethods="19"/>
+      <file name="authSelectors.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/redux/features/auth/authSelectors.js">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="1"/>
+        <line num="2" count="12" type="stmt"/>
+        <line num="3" count="2" type="stmt"/>
+        <line num="4" count="2" type="stmt"/>
+        <line num="5" count="2" type="stmt"/>
+      </file>
+      <file name="authSlice.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/redux/features/auth/authSlice.js">
+        <metrics statements="21" coveredstatements="21" conditionals="0" coveredconditionals="0" methods="11" coveredmethods="11"/>
+        <line num="10" count="2" type="stmt"/>
+        <line num="17" count="2" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+        <line num="25" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="32" count="1" type="stmt"/>
+        <line num="37" count="2" type="stmt"/>
+        <line num="40" count="1" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+        <line num="45" count="1" type="stmt"/>
+        <line num="50" count="1" type="stmt"/>
+        <line num="51" count="1" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="55" count="1" type="stmt"/>
+        <line num="56" count="1" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
+        <line num="62" count="1" type="stmt"/>
+        <line num="68" count="2" type="stmt"/>
+        <line num="69" count="2" type="stmt"/>
+        <line num="76" count="2" type="stmt"/>
+      </file>
+      <file name="authThunks.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/redux/features/auth/authThunks.js">
+        <metrics statements="25" coveredstatements="25" conditionals="2" coveredconditionals="2" methods="6" coveredmethods="6"/>
+        <line num="18" count="3" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="20" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="26" count="2" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="32" count="3" type="stmt"/>
+        <line num="35" count="2" type="stmt"/>
+        <line num="36" count="2" type="stmt"/>
+        <line num="38" count="1" type="stmt"/>
+        <line num="39" count="1" type="stmt"/>
+        <line num="41" count="1" type="stmt"/>
+        <line num="47" count="3" type="stmt"/>
+        <line num="50" count="2" type="stmt"/>
+        <line num="51" count="2" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="53" count="1" type="stmt"/>
+        <line num="55" count="1" type="stmt"/>
+        <line num="60" count="3" type="stmt"/>
+        <line num="63" count="2" type="stmt"/>
+        <line num="64" count="2" type="stmt"/>
+        <line num="65" count="1" type="stmt"/>
+        <line num="66" count="1" type="stmt"/>
+        <line num="68" count="1" type="stmt"/>
+      </file>
+      <file name="mapAuthErrorToModelError.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/redux/features/auth/mapAuthErrorToModelError.js">
+        <metrics statements="10" coveredstatements="10" conditionals="6" coveredconditionals="6" methods="1" coveredmethods="1"/>
+        <line num="8" count="3" type="stmt"/>
+        <line num="45" count="3" type="stmt"/>
+        <line num="46" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="47" count="1" type="stmt"/>
+        <line num="50" count="10" type="cond" truecount="2" falsecount="0"/>
+        <line num="51" count="9" type="stmt"/>
+        <line num="53" count="9" type="cond" truecount="2" falsecount="0"/>
+        <line num="54" count="8" type="stmt"/>
+        <line num="61" count="1" type="stmt"/>
+        <line num="68" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="redux.features.snackbar">
+      <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+      <file name="snackbarSlice.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/redux/features/snackbar/snackbarSlice.js">
+        <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="3" coveredmethods="3"/>
+        <line num="5" count="5" type="stmt"/>
+        <line num="10" count="5" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="29" count="5" type="stmt"/>
+      </file>
+    </package>
+    <package name="redux.middleware">
+      <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
+      <file name="snackbarMiddleware.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/redux/middleware/snackbarMiddleware.js">
+        <metrics statements="5" coveredstatements="5" conditionals="4" coveredconditionals="4" methods="3" coveredmethods="3"/>
+        <line num="6" count="3" type="stmt"/>
+        <line num="7" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="2" type="cond" truecount="2" falsecount="0"/>
+        <line num="9" count="2" type="stmt"/>
+        <line num="12" count="3" type="stmt"/>
+      </file>
+    </package>
+    <package name="redux.utils">
+      <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+      <file name="createThunk.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/redux/utils/createThunk.js">
+        <metrics statements="6" coveredstatements="6" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+        <line num="7" count="12" type="stmt"/>
+        <line num="9" count="9" type="stmt"/>
+        <line num="10" count="9" type="stmt"/>
+        <line num="12" count="5" type="cond" truecount="2" falsecount="0"/>
+        <line num="13" count="4" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="test.redux.fixtures">
+      <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="authFixture.js" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/test/redux/fixtures/authFixture.js">
+        <metrics statements="1" coveredstatements="1" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="3" count="2" type="stmt"/>
+      </file>
+    </package>
+    <package name="test.utils">
+      <metrics statements="13" coveredstatements="13" conditionals="14" coveredconditionals="7" methods="6" coveredmethods="6"/>
+      <file name="renderHookWithStore.jsx" path="/Users/inabamasatake/Desktop/FrontHacks/32ReduxThunk/practice/auth_app/src/test/utils/renderHookWithStore.jsx">
+        <metrics statements="13" coveredstatements="13" conditionals="14" coveredconditionals="7" methods="6" coveredmethods="6"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="19" count="6" type="stmt"/>
+        <line num="23" count="6" type="stmt"/>
+        <line num="28" count="6" type="stmt"/>
+        <line num="30" count="6" type="cond" truecount="2" falsecount="2"/>
+        <line num="31" count="6" type="stmt"/>
+        <line num="34" count="6" type="cond" truecount="1" falsecount="1"/>
+        <line num="36" count="6" type="cond" truecount="2" falsecount="4"/>
+        <line num="39" count="6" type="stmt"/>
+        <line num="45" count="6" type="stmt"/>
+        <line num="49" count="6" type="stmt"/>
+        <line num="50" count="6" type="stmt"/>
+        <line num="59" count="14" type="stmt"/>
       </file>
     </package>
   </project>

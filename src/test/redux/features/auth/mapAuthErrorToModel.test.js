@@ -2,18 +2,15 @@
 
 import { describe, test, expect } from "vitest";
 
-import { mapAuthErrorToModelError } from "../../../../redux/features/auth/mapAuthErrorToModelError";
+import { mapAuthErrorToModelError } from "@/redux/features/auth/mapAuthErrorToModelError";
 
-import {
-  ModelError,
-  MODEL_ERROR_CODE,
-} from "../../../../models/errors/ModelError";
+import { ModelError, MODEL_ERROR_CODE } from "@/models/errors/ModelError";
 
 describe("Firebase Auth エラーを ModelError に正規化する", () => {
   test("ModelErrorをそのまま正規化する", () => {
     const error = new ModelError(
       MODEL_ERROR_CODE.VALIDATION,
-      "バリデーションエラー"
+      "バリデーションエラー",
     );
 
     const result = mapAuthErrorToModelError(error);
@@ -72,7 +69,6 @@ describe("Firebase Auth エラーを ModelError に正規化する", () => {
     expect(result).toMatchObject({
       code: modelCode,
       message,
-      cause: firebaseError,
     });
   });
 

@@ -1,4 +1,4 @@
-// src/redux/utils/createThunk.js
+// src/redux/utils/features/createThunk.js
 
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
@@ -9,11 +9,16 @@ export const createThunk = (type, fn) =>
     try {
       return await fn(arg, thunkApi);
     } catch (error) {
-      const payload =
-        error instanceof ModelError
-          ? { code: error.code, message: error.message }
-          : { code: "UNKNOWN", message: "予期せぬエラーが発生しました" };
+      if (error instanceof ModelError) {
+        return thunkApi.rejectWithValue({
+          code: error.code,
+          message: error.message,
+        });
+      }
 
-      return thunkApi.rejectWithValue(payload);
+      return thunkApi.rejectWithValue({
+        code: "UNKNOWN",
+        message: "予期せぬエラーが発生しました",
+      });
     }
   });

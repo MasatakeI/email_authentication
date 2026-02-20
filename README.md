@@ -1,202 +1,140 @@
 # メール・パスワード認証アプリ (React / Redux Toolkit / Firebase)
 
-Firebase Authentication を利用した、メール・パスワード認証（登録 / ログイン / ログアウト）を行うシンプルな Web アプリです。
-実務レベルの「**責務分離**」「**エラーハンドリング**」「**テスト容易性**」を重視した設計を行っています。
+Firebase Authentication を利用した、堅牢な認証基盤を持つ Web アプリケーションです。
+単なる機能実装に留まらず、実務レベルの**「責務分離」「エラーハンドリング」「テスト容易性」「高カバレッジなテスト」**を徹底した設計を採用しています。
 
 ---
 
-## 主な機能
+## 🚀 主な機能
 
-- **ユーザー登録・ログイン・ログアウト**
-- **メール認証**: 登録時の認証メール送信機能
-- **ルーティング保護**: `PrivateRoute` による、未認証ユーザーのアクセス制限
-- **通知システム**: Snackbar を利用した、成功・失敗時の即時フィードバック
-- **エラー正規化**: Firebase 固有のエラーをアプリケーション共通形式に変換して表示
+- **認証基盤**: ユーザー登録、ログイン、ログアウト
+- **セキュリティ**:
+  - **メール認証**: 登録時の認証メール送信・検証機能
+  - **ルーティング保護**: `PrivateRoute` による未認証・未検証ユーザーのアクセス制限
+- **UX/UI**:
+  - **通知システム**: Snackbar による即時フィードバック
+  - **ローディング制御**: 認証状態確定までのチラつき防止（初期化プロセスの厳密化）
+- **エラー正規化**: Firebase 固有のエラーをアプリ共通形式へ変換して表示
+
+---
 
 ## 技術スタック
 
-### フロントエンド
-
-- **JavaScript**
-- **Framework**: React
-- **State Management**: Redux Toolkit (Thunk)
-- **Routing**: React Router
-- **UI Components**: Material UI (MUI)
-
-### バックエンド / インフラ
-
-- **Authentication**: Firebase Authentication
-
-### テスト
-
-- **Runner**: Vitest
-- **Library**: React Testing Library
+| カテゴリ       | 技術                                       |
+| :------------- | :----------------------------------------- |
+| **Frontend**   | React, Redux Toolkit (Thunk), React Router |
+| **UI Library** | Material UI (MUI)                          |
+| **Backend**    | Firebase Authentication                    |
+| **Testing**    | Vitest, React Testing Library              |
 
 ---
 
 ## アーキテクチャ概要
 
-UI 層からデータ層まで、依存関係を一方通行に整理し、Firebase への直接的な依存を最小限に抑えています。
+UI 層からデータ層まで、依存関係を一方通行に整理し、**「Firebase への依存を特定レイヤーに閉じ込める」**設計を行っています。
 
 ### 階層別の役割
 
-1. **UI (components)**: 表示に専念。状態管理や Firebase の仕様を意識しない。
+1. **UI (Components)**: 表示とユーザー入力に専念。
 2. **Hooks (useAuthForm)**: View とロジックの橋渡しを担当。
-3. **Redux (authThunks)**: アプリケーションロジックおよび非同期処理の制御。
-4. **Model (AuthModel)**: Firebase SDK のラッパー。エラーの正規化とデータ抽出を担当。
+3. **Redux (Thunks)**: アプリケーションロジックと非同期処理の制御。
+4. **Model (AuthModel)**: Firebase SDK のラッパー。**エラー正規化**とデータ抽出を担当。
 
-### ディレクトリ構成（抜粋）
+### ディレクトリ構成
 
 ```text
 src/
-├─ components/
-│  ├─ routing/       # PrivateRoute (認証ガード)
-│  └─ widgets/       # AuthForm (View/Hook 分離)
-├─ models/           # Firebase 依存をここに集約
-│  └─ errors/        # ModelError.js (エラー正規化定義)
-├─ redux/            # Slices, Thunks, Middlewares
-├─ firebase/         # Firebase Config
-└─ test/             # 各レイヤーのユニットテスト
+├─ components/       # UI層：PrivateRoute（ガード）, AuthForm（View/Hook分離）
+├─ models/           # データ層：Firebase依存をここに集約
+│  └─ errors/        # ModelError.js (独自エラークラス定義)
+├─ redux/            # 状態管理：Slices, Thunks, Middlewares
+├─ firebase/         # 設定：Firebase Config
+└─ test/             # 検証：各レイヤーのユニットテスト
 ```
 
-## 認証フロー & セキュリティ
+# 認証フロー & セキュリティ詳細設計
 
-堅牢なユーザー体験を提供するため、
-**認証状態の初期化プロセス** と **ルーティング制御** を厳密に分離しています。
-
----
-
-### 1. 初期化プロセス
-
-アプリ起動時に `initAuthAsync` を dispatch し、
-Firebase Authentication の `onAuthStateChanged` を購読します。
-
-- **認証確認中**
-  ローディング画面を表示し、認証状態が未確定なまま画面遷移が発生することを防止。
-
-- **確認完了後**
-  `authChecked = true` となり、認証状態に応じた画面へのルーティングを許可。
-
-この仕組みにより、
-ログイン済みユーザーが一瞬ログイン画面へ戻されるなどの
-**不自然な UI 遷移を防止**しています。
+本アプリケーションにおける、ユーザーの安全なアクセス管理とエラー処理の設計詳細を解説します。
 
 ---
 
-### 2. PrivateRoute の制御
+## 🔒 認証フローと状態管理
 
-プライベートなリソースは `PrivateRoute` によって保護されています。
-以下の条件を **すべて満たさない限り**、アクセスは拒否されます。
+堅牢なユーザー体験を提供するため、**「認証状態の初期化」**と**「ルーティング制御」**を厳密に分離しています。
 
-- **認証確認完了**（`authChecked === true`）
-- **ログイン済み**（`user` が存在）
-- **メールアドレス検証済み**（`emailVerified === true`）
+### 1. 初期化プロセス（Initialization）
 
-条件を満たさない場合は、
-ルートパス（`/`）へリダイレクトし、不正アクセスを防止します。
+アプリ起動時、Firebase Authentication の状態が確定する前にコンテンツが表示されることを防ぎます。
+
+- **処理内容**: `initAuthAsync` を dispatch し、`onAuthStateChanged` を購読。
+- **UX への影響**:
+  - **認証確認中**: 全画面ローディングを表示。
+  - **確認完了後**: `authChecked = true` となり、適切な画面へ遷移。
+- **メリット**: ログイン済みユーザーが一瞬だけログイン画面（AuthForm）を見てしまう「チラつき」を完全に防止します。
+
+### 2. PrivateRoute によるアクセス制限
+
+認証が必要なページ（Dashboard 等）は `PrivateRoute` コンポーネントで保護されています。
+
+**【アクセス許可条件（AND 条件）】**
+
+1.  **初期化完了**: `authChecked === true` であること。
+2.  **ログイン状態**: `user` オブジェクトが存在すること。
+3.  **メール検証**: `emailVerified === true` であること。
+
+> [!IMPORTANT]
+> メール認証が完了していないユーザーは、ログイン済みであってもプライベートなリソースへのアクセスを拒否し、認証待ち画面またはルートへリダイレクトします。
 
 ---
 
 ## ⚠️ エラーハンドリング設計
 
-エラーの発生からユーザーへの通知までを自動化し、
-各レイヤーでの重複コードを排除しています。
+「Firebase の仕様を UI に持ち込まない」ことを徹底し、各レイヤーで責務を分離しています。
 
-| レイヤ         | 役割                                                                |
-| :------------- | :------------------------------------------------------------------ |
-| **Model**      | Firebase SDK のエラーを捕捉し、独自クラス `ModelError` に正規化     |
-| **Thunk**      | ビジネスロジックを実行。失敗時は `rejectWithValue` を返却           |
-| **Middleware** | `snackbarMiddleware` が非同期処理の失敗を検知し Snackbar を自動表示 |
-| **UI**         | 成功・失敗の判定ロジックを持たず、ステートに基づく描画に専念        |
+### 1. エラーコードの正規化（Error Code Policy）
 
-この構成により、
-UI 側はエラー処理の詳細を意識せず、表示ロジックに集中できます。
+Firebase SDK のエラーを、アプリケーション共通の `MODEL_ERROR_CODE` に変換します。
 
----
+| MODEL_ERROR_CODE   | 主な Firebase エラーコード                               | UI の振る舞い                                  |
+| :----------------- | :------------------------------------------------------- | :--------------------------------------------- |
+| **AUTH_INVALID**   | `invalid-email`, `weak-password`, `email-already-in-use` | バリデーションエラー（入力欄赤字）             |
+| **AUTH_FORBIDDEN** | `wrong-password`, `user-not-found`, `too-many-requests`  | アラートメッセージ表示                         |
+| **NETWORK**        | 通信エラー全般                                           | 「通信環境を確認してください」という通知       |
+| **EXTERNAL**       | その他、想定外の Firebase エラー                         | 汎用エラー（「システムエラーが発生しました」） |
 
-## エラーコード設計（Error Code Policy）
+### 2. 自動通知の仕組み
 
-本アプリでは、Firebase や外部 API 由来のエラーを
-アプリケーション共通のエラーコード体系に正規化しています。
-
-UI や Middleware は エラーの詳細実装を知らずに振る舞える よう設計されています。
-
-エラーコード一覧
-MODEL_ERROR_CODE 概要 主な発生源 UI の扱い
-AUTH_INVALID 入力値や認証条件が不正 無効なメール形式 / 弱いパスワード / 未認証メール 入力エラーとして表示
-AUTH_FORBIDDEN 認証情報はあるが許可されていない パスワード不一致 / 試行回数超過 エラーメッセージ表示
-NETWORK ネットワーク・通信障害 オフライン / タイムアウト 再試行を促す
-EXTERNAL 外部サービス依存の不明エラー Firebase 側の想定外エラー 汎用エラー表示
-Firebase Auth エラーとの対応関係
-Firebase エラーコード MODEL_ERROR_CODE
-auth/invalid-email AUTH_INVALID
-auth/weak-password AUTH_INVALID
-auth/email-already-in-use AUTH_INVALID
-auth/wrong-password AUTH_FORBIDDEN
-auth/user-not-found AUTH_FORBIDDEN
-auth/too-many-requests AUTH_FORBIDDEN
-Firebase 由来の不明エラー EXTERNAL
-通信エラー NETWORK
-設計意図
-
-Firebase のエラーコードを UI に漏らさない
-
-UI / Middleware / Test は MODEL_ERROR_CODE のみを基準に判断
-
-外部 API 変更時も、影響範囲を mapAuthErrorToModelError に限定
-
-この設計により、
-
-Snackbar 表示
-
-フォームエラーメッセージ
-
-テストの期待値
-
-を 一貫したルールで制御できます。
-
-実装責務の分離
-レイヤ 責務
-Model Firebase エラーの捕捉
-Mapper Firebase → ModelError 変換
-Redux Thunk rejectWithValue(ModelError)
-Middleware error.code に基づく通知制御
-UI 表示のみに専念
-補足
-
-本設計では 「エラーの種類」ではなく「UI がどう振る舞うべきか」 を軸に分類しています。
-そのため Firebase の詳細なエラーコードを直接扱うことはありません。
-
-## テスト方針
-
-信頼性の高いコードベースを維持するため、以下の戦略でテストを実装しています。
-
-- **完全な Mock 化**
-  Firebase SDK を完全に Mock し、ネットワーク環境に依存しない決定論的なテストを実現。
-
-- **非同期テスト**
-  Redux Thunk の `unwrap()` を活用し、非同期処理の完了と副作用を明示的に検証。
-
-- **高いカバレッジ**
-  ログイン成功などの正常系に加え、パスワード相違・ネットワークエラーなどの異常系も網羅。
+Redux Middleware（`snackbarMiddleware`）が、Thunk の `rejected` アクションを自動で検知します。
+UI コンポーネント側で毎回 `try-catch` を書く必要がなく、エラーが発生すれば自動的に Snackbar が表示されます。
 
 ---
 
-## 今後の改善案
+## ✅ テスト戦略
 
-- [ ] パスワードリセット機能の実装
-- [ ] ユーザープロフィール編集（DisplayName / Avatar）
-- [ ] アクセストークン管理の強化
-- [ ] Playwright による E2E テストの導入
+信頼性の高いコードベースを維持するため、以下のテスト方針を採用しています。
+
+- **Firebase SDK の完全 Mock 化**:
+  テスト環境で実際に Firebase へ通信することなく、`auth` モジュールを Mock 化。あらゆるエラーパターンを決定論的に再現します。
+- **非同期処理の検証**:
+  Redux Thunk の `unwrap()` を使用し、非同期処理が期待通りに成功/失敗したかをアサーションします。
+- **網羅性**:
+  「正しいパスワードでログインできるか」だけでなく、「パスワードを間違えた時に適切な正規化エラーが返るか」という異常系を重視しています。
 
 ---
 
-## リポジトリ
+## 📅 今後のロードマップ
 
-**GitHub**
-https://github.com/MasatakeI/email_authentication.git
+- [ ] **パスワードリセット機能**: 忘れたユーザーへのメール送信フロー。
+- [ ] **プロフィール管理**: ユーザー名（DisplayName）やアバターの変更。
+- [ ] **E2E テスト**: Playwright を導入し、ブラウザ実機での挙動確認を自動化。
+
+---
+
+## 🔗 プロジェクトリソース
+
+- **GitHub Repository**: [https://github.com/MasatakeI/email_authentication.git](https://github.com/MasatakeI/email_authentication.git)
+- **作成者**: MasatakeI
 
 ```
-
 
 ```

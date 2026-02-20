@@ -51,19 +51,23 @@ export const mapAuthErrorToModelError = (error) => {
     const mapped = AUTH_ERROR_MAP[error.code];
 
     if (mapped) {
-      return new ModelError(mapped.code, mapped.message, error);
+      return new ModelError({
+        code: mapped.code,
+        message: mapped.message,
+        cause: error,
+      });
     }
 
-    return new ModelError(
-      MODEL_ERROR_CODE.EXTERNAL,
-      "認証エラーが発生しました",
-      error
-    );
+    return new ModelError({
+      code: MODEL_ERROR_CODE.EXTERNAL,
+      message: "認証エラーが発生しました",
+      cause: error,
+    });
   }
 
-  return new ModelError(
-    MODEL_ERROR_CODE.UNKNOWN,
-    "予期せぬエラーが発生しました",
-    error
-  );
+  return new ModelError({
+    code: MODEL_ERROR_CODE.UNKNOWN,
+    message: "予期せぬエラーが発生しました",
+    cause: error,
+  });
 };

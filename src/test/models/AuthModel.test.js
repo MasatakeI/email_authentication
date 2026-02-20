@@ -19,16 +19,16 @@ vi.mock("firebase/auth", () => ({
   onAuthStateChanged: vi.fn(),
 }));
 
-import { auth } from "../../firebase/auth";
+import { auth } from "@/firebase/auth";
 
-import { ModelError, MODEL_ERROR_CODE } from "../../models/errors/ModelError";
+import { ModelError, MODEL_ERROR_CODE } from "@/models/errors/ModelError";
 
 import {
   signUpUser,
   signInUser,
   signOutUser,
   subscribeAuth,
-} from "../../models/AuthModel";
+} from "@/models/AuthModel";
 
 describe("AuthModel", () => {
   beforeEach(() => {
@@ -81,7 +81,7 @@ describe("AuthModel", () => {
       expect(createUserWithEmailAndPassword).toHaveBeenCalledWith(
         auth,
         email,
-        password
+        password,
       );
 
       expect(sendEmailVerification).toHaveBeenCalledWith(mockUser);
@@ -100,7 +100,7 @@ describe("AuthModel", () => {
     test("パスワード6文字未満", async () => {
       const invalidPassword = "aaa";
       await expect(signUpUser(email, invalidPassword)).rejects.toBeInstanceOf(
-        ModelError
+        ModelError,
       );
       await expect(signUpUser(email, invalidPassword)).rejects.toMatchObject({
         code: MODEL_ERROR_CODE.VALIDATION,
@@ -141,7 +141,7 @@ describe("AuthModel", () => {
       expect(signInWithEmailAndPassword).toHaveBeenCalledWith(
         auth,
         email,
-        password
+        password,
       );
     });
     test("失敗:バリデーションエラー Firebaseは呼ばれない", async () => {

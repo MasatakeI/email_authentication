@@ -12,10 +12,12 @@ export const MODEL_ERROR_CODE = {
 };
 
 export class ModelError extends Error {
-  constructor(code, message, cause) {
+  constructor({ code, message, cause }) {
     super(message);
     this.name = "ModelError";
     this.code = code;
-    this.cause = cause;
+    if (cause instanceof Error) {
+      this.cause = cause;
+    }
   }
 }

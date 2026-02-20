@@ -1,6 +1,6 @@
 // src/components/widgets/AuthForm/useAuthForm.js
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectIsLoading } from "../../../redux/features/auth/authSelectors";
 
@@ -24,13 +24,13 @@ export const useAuthForm = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
-
+    if (isLoading) return;
     try {
       await dispatch(
         signUpUserAsync({
           email: signUpEmail,
           password: signUpPassword,
-        })
+        }),
       ).unwrap();
 
       setSignUpEmail("");
@@ -42,13 +42,13 @@ export const useAuthForm = () => {
 
   const handleSignIn = async (e) => {
     e.preventDefault();
-
+    if (isLoading) return;
     try {
       await dispatch(
         signInUserAsync({
           email: signInEmail,
           password: signInPassword,
-        })
+        }),
       ).unwrap();
 
       navigate("/main");
@@ -60,17 +60,24 @@ export const useAuthForm = () => {
     }
   };
 
+  const signUpState = {
+    email: signUpEmail,
+    setEmail: setSignUpEmail,
+    password: signUpPassword,
+    setPassword: setSignUpPassword,
+    onSubmit: handleSignUp,
+  };
+  const signInState = {
+    email: signInEmail,
+    setEmail: setSignInEmail,
+    password: signInPassword,
+    setPassword: setSignInPassword,
+    onSubmit: handleSignIn,
+  };
+
   return {
     isLoading,
-    handleSignIn,
-    handleSignUp,
-    signUpEmail,
-    setSignUpEmail,
-    signUpPassword,
-    setSignUpPassword,
-    signInEmail,
-    setSignInEmail,
-    signInPassword,
-    setSignInPassword,
+    signUpState,
+    signInState,
   };
 };

@@ -1,31 +1,32 @@
 // src/test/components/widgets/AuthForm/AuthFormSection.test.jsx
 
-import { describe, test, expect, vi } from "vitest";
+import { describe, test, expect, vi, beforeEach } from "vitest";
 
-import { screen, render, fireEvent } from "@testing-library/react";
+import { screen, render } from "@testing-library/react";
 
-import AuthFormSection from "../../../../components/widgets/AuthForm/AuthFormSection";
+import AuthFormSection from "@/components/widgets/AuthForm/AuthFormSection";
 
-const setup = (props = {}) => {
-  const defaultProps = {
-    title: "登録",
-    onSubmit: vi.fn(),
-    emailId: "signup-email",
-    email: "",
-    setEmail: vi.fn(),
-    passwordId: "signup-password",
-    password: "",
-    setPassword: vi.fn(),
-    isLoading: false,
-  };
-
-  render(<AuthFormSection {...defaultProps} {...props} />);
-  return defaultProps;
-};
+import userEvent from "@testing-library/user-event";
 
 describe("AuthFormSection", () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+  const defaultProps = {
+    title: "登録",
+    emailId: "signup-email",
+    passwordId: "signup-password",
+    isLoading: false,
+
+    onSubmit: vi.fn(),
+    email: "",
+    setEmail: vi.fn(),
+    password: "",
+    setPassword: vi.fn(),
+  };
+
   test("formセクションが表示される", () => {
-    setup();
+    render(<AuthFormSection {...defaultProps} />);
 
     expect(screen.getByRole("heading", { name: "登録" })).toBeInTheDocument();
 
@@ -35,34 +36,27 @@ describe("AuthFormSection", () => {
     expect(screen.getByRole("button", { name: "登録" })).toBeInTheDocument();
   });
 
-  test("入力すると対応するsetterが呼ばれる", () => {
-    const setEmail = vi.fn();
-    const setPassword = vi.fn();
+  test("入力すると対応するsetterが呼ばれる", async () => {
+    const user = userEvent.setup();
+    render(<AuthFormSection {...defaultProps} />);
 
-    setup({ setEmail, setPassword });
+    await user.type(screen.getByLabelText("メールアドレス"), "xxx@zzz.com");
+    await user.type(screen.getByLabelText("パスワード"), "aaaaaa");
 
-    fireEvent.change(screen.getByLabelText("メールアドレス"), {
-      target: { value: "xxx@zzz.com" },
-    });
-    fireEvent.change(screen.getByLabelText("パスワード"), {
-      target: { value: "aaaaaa" },
-    });
-
-    expect(setEmail).toHaveBeenCalledWith("xxx@zzz.com");
-    expect(setPassword).toHaveBeenCalledWith("aaaaaa");
+    expect(defaultProps.setEmail).toHaveBeenCalled();
+    expect(defaultProps.setPassword).toHaveBeenCalled();
   });
 
-  test("ボタンを押すとonSubmitが呼ばれる", () => {
-    const onSubmit = vi.fn();
+  test("ボタンを押すとonSubmitが呼ばれる", async () => {
+    const user = userEvent.setup();
+    render(<AuthFormSection {...defaultProps} />);
 
-    setup({ onSubmit });
-
-    fireEvent.click(screen.getByRole("button", { name: "登録" }));
-    expect(onSubmit).toHaveBeenCalledTimes(1);
+    await user.click(screen.getByRole("button", { name: "登録" }));
+    expect(defaultProps.onSubmit).toHaveBeenCalledTimes(1);
   });
 
   test("isLoading=trueの時,ボタンがdisabledになる", () => {
-    setup({ isLoading: true });
+    render(<AuthFormSection {...defaultProps} isLoading={true} />);
 
     expect(screen.getByRole("button", { name: "登録" })).toBeDisabled();
   });

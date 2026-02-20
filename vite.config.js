@@ -27,4 +27,12 @@ export default defineConfig({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+
+  coverage: {
+    provider: "v8",
+    reporter: ["text", "json", "html"],
+    all: true,
+    include: ["src/**/*.{js,jsx}"],
+    exclude: ["src/main.jsx", "src/test/**"],
+  },
 });

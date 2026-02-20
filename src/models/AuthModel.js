@@ -19,20 +19,26 @@ const AUTH_MESSAGES = {
 
 const validateEmailAndPassword = (email, password) => {
   if (!email || !password) {
-    throw new ModelError(MODEL_ERROR_CODE.VALIDATION, AUTH_MESSAGES.REQUIRED);
+    throw new ModelError({
+      code: MODEL_ERROR_CODE.VALIDATION,
+      message: AUTH_MESSAGES.REQUIRED,
+    });
   }
 
   if (password.length < 6) {
-    throw new ModelError(
-      MODEL_ERROR_CODE.VALIDATION,
-      AUTH_MESSAGES.PASSWORD_LENGTH
-    );
+    throw new ModelError({
+      code: MODEL_ERROR_CODE.VALIDATION,
+      message: AUTH_MESSAGES.PASSWORD_LENGTH,
+    });
   }
 };
 
 const validateRequired = (email, password) => {
   if (!email || !password) {
-    throw new ModelError(MODEL_ERROR_CODE.VALIDATION, AUTH_MESSAGES.REQUIRED);
+    throw new ModelError({
+      code: MODEL_ERROR_CODE.VALIDATION,
+      message: AUTH_MESSAGES.REQUIRED,
+    });
   }
 };
 
@@ -57,7 +63,7 @@ export const signUpUser = async (email, password) => {
   const userCredential = await createUserWithEmailAndPassword(
     auth,
     email,
-    password
+    password,
   );
 
   const user = userCredential.user;
@@ -72,16 +78,16 @@ export const signInUser = async (email, password) => {
   const userCredential = await signInWithEmailAndPassword(
     auth,
     email,
-    password
+    password,
   );
 
   const user = userCredential.user;
 
   if (!user.emailVerified) {
-    throw new ModelError(
-      MODEL_ERROR_CODE.AUTH,
-      "認証されていないメールアドレスのためログインできません"
-    );
+    throw new ModelError({
+      code: MODEL_ERROR_CODE.AUTH,
+      message: "認証されていないメールアドレスのためログインできません",
+    });
   }
 
   return toAuthUser(user);

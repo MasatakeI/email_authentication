@@ -2,10 +2,11 @@
 
 import { describe, test, expect, vi, beforeEach } from "vitest";
 
-import { screen, render, fireEvent, waitFor } from "@testing-library/react";
+import { screen, render, waitFor } from "@testing-library/react";
 import { userEvent } from "@testing-library/user-event";
 
 import MainPage from "@/components/pages/MainPage/MainPage";
+import { signOutUserAsync } from "@/redux/features/auth/authThunks";
 
 // モック
 const mockNavigate = vi.fn();
@@ -28,10 +29,16 @@ vi.mock("@/redux/features/auth/authThunks", () => ({
 describe("MainPage", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.spyOn(console, "error").mockImplementation(() => {});
 
-    mockDispatch.mockReturnValue({
+    const mockAction = {
+      type: "auth/singOutUser",
       unwrap: vi.fn().mockResolvedValue(),
-    });
+    };
+
+    vi.mocked(signOutUserAsync).mockReturnValue(mockAction);
+
+    mockDispatch.mockImplementation((action) => action);
   });
 
   test("ログイン成功メッセージとログアウトボタンが表示される", async () => {
@@ -39,7 +46,7 @@ describe("MainPage", () => {
 
     expect(screen.getByText("ログイン成功")).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: "ログアウト" })
+      screen.getByRole("button", { name: "ログアウト" }),
     ).toBeInTheDocument();
   });
 
